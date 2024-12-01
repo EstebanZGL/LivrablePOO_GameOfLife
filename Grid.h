@@ -1,7 +1,6 @@
 #ifndef GRID_HPP
 #define GRID_HPP
 
-#include <iostream>
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include "Cell.h"
@@ -29,15 +28,12 @@ private:
 public:
     Grid(int r, int c, float size) : rows(r), cols(c), cellSize(size), cells(r, std::vector<Cell>(c)) {}
 
-    void initialize() {
-        int x, y;
-        std::cout << "Entrez les positions des cellules vivantes (x y), -1 -1 pour finir:\n";
-        while (true) {
-            std::cin >> x >> y;
-            if (x == -1 && y == -1) break;
-            if (x >= 0 && x < rows && y >= 0 && y < cols) {
-                cells[x][y].setAlive(true);
-            }
+    void toggleCell(int mouseX, int mouseY) {
+        int x = mouseY / cellSize;
+        int y = mouseX / cellSize;
+        if (x >= 0 && x < rows && y >= 0 && y < cols) {
+            bool currentState = cells[x][y].getAlive();
+            cells[x][y].setAlive(!currentState);
         }
     }
 
@@ -58,13 +54,26 @@ public:
     }
 
     void draw(sf::RenderWindow& window) const {
-        sf::RectangleShape cellShape(sf::Vector2f(cellSize - 1, cellSize - 1));
+        sf::RectangleShape cellShape(sf::Vector2f(cellSize, cellSize)); // Taille complète
         for (int x = 0; x < rows; ++x) {
             for (int y = 0; y < cols; ++y) {
                 cellShape.setPosition(y * cellSize, x * cellSize);
-                cellShape.setFillColor(cells[x][y].getAlive() ? sf::Color::Green : sf::Color::Black);
+                cellShape.setFillColor(cells[x][y].getAlive() ? sf::Color::Black : sf::Color::White);
                 window.draw(cellShape);
             }
+        }
+
+        // Lignes pour la grille
+        sf::RectangleShape line(sf::Vector2f(cols * cellSize, 1));
+        line.setFillColor(sf::Color::Black);
+        for (int i = 1; i < rows; ++i) {
+            line.setPosition(0, i * cellSize);
+            window.draw(line);
+        }
+        line.setSize(sf::Vector2f(1, rows * cellSize));
+        for (int i = 1; i < cols; ++i) {
+            line.setPosition(i * cellSize, 0);
+            window.draw(line);
         }
     }
 };

@@ -3,13 +3,13 @@
 
 class Cell {
 private:
-    bool isAlive;
+    bool alive;
 
 public:
-    Cell() : isAlive(false) {}
+    Cell() : alive(false) {}
 
-    void setAlive(bool state) { isAlive = state; }
-    bool getAlive() const { return isAlive; }
+    bool getAlive() const { return alive; }
+    void setAlive(bool state) { alive = state; }
 };
 
 #endif

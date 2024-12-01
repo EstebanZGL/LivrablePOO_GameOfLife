@@ -1,14 +1,26 @@
-#include "Game.h"
 #include <iostream>
-using namespace std;
+#include "Game.h"
 
 int main() {
-    int rows = 20, cols = 20;
+    int rows, cols, delay;
     float cellSize = 20.0f;
 
-    cout << "Bienvenue dans le Jeu de la Vie avec SFML !\n";
-    Game game(rows, cols, cellSize);
-    game.start();
+    std::cout << "Bienvenue dans le Jeu de la Vie avec SFML !\n";
+    std::cout << "Entrez le nombre de lignes : ";
+    std::cin >> rows;
+    std::cout << "Entrez le nombre de colonnes : ";
+    std::cin >> cols;
+    std::cout << "Entrez le temps entre chaque itération (en millisecondes) : ";
+    std::cin >> delay;
+
+    try {
+        Game game(rows, cols, cellSize, delay);
+        game.start();
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Erreur : " << e.what() << std::endl;
+        return 1;
+    }
 
     return 0;
 }
