@@ -1,6 +1,6 @@
 Livrable pour le projet le Jeu de la Vie de Conway. 
 
-Voici les différentes fonctionnalités : \n
+Voici les différentes fonctionnalités :
 -mode graphique ou console
 -possibilité d'un fichier d'entrée ou d'un choix manuel des celllules
 -choix du temps entre les itérations
