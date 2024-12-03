@@ -1,4 +1,4 @@
-#Jeu de la Vie de Conway. 
+# Jeu de la Vie de Conway. 
 
 Voici les différentes fonctionnalités :
 
@@ -18,7 +18,7 @@ Voici les différentes fonctionnalités :
 
 
 
-##Mode graphique :
+## Mode graphique :
 
 -Appuyer sur "p" pour mettre en pause le jeu
 
@@ -26,6 +26,6 @@ Voici les différentes fonctionnalités :
 
 
 
-##Mode console :
+## Mode console :
 
 -sauvegarde des itérations faites
