@@ -1,8 +1,6 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
-//test 2
-
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "Grid.h"
@@ -22,7 +20,7 @@ private:
 public:
     Game(int rows, int cols, float cellSize, int delayMs)
         : grid(rows, cols, cellSize),
-        window(sf::VideoMode(cols* cellSize, rows* cellSize + 60), "Jeu de la Vie"), // +60 pour le compteur
+        window(sf::VideoMode(cols* cellSize, rows* cellSize + 60), "Jeu de la Vie"),
         running(false), editing(true), iterationCount(0), delay(delayMs) {
         if (!font.loadFromFile("Roboto-Regular.ttf")) {
             throw std::runtime_error("Impossible de charger la police 'Roboto-Regular.ttf'.");
@@ -31,8 +29,26 @@ public:
         // Configuration du texte
         iterationText.setFont(font);
         iterationText.setCharacterSize(20);
-        iterationText.setFillColor(sf::Color::Black); // Couleur noire pour contraste
-        iterationText.setPosition(10, rows * cellSize + 10); // Juste en bas de la grille
+        iterationText.setFillColor(sf::Color::Black);
+        iterationText.setPosition(10, rows * cellSize + 10);
+    }
+
+    Game(const std::string& filename, float cellSize)
+        : grid(0, 0, cellSize),
+        window(sf::VideoMode(800, 600), "Jeu de la Vie"), // Taille par défaut
+        running(false), editing(false), iterationCount(0), delay(100) {
+        grid.loadFromFile(filename);
+        window.create(sf::VideoMode(grid.getCols() * cellSize, grid.getRows() * cellSize + 60), "Jeu de la Vie");
+
+        if (!font.loadFromFile("Roboto-Regular.ttf")) {
+            throw std::runtime_error("Impossible de charger la police 'Roboto-Regular.ttf'.");
+        }
+
+        // Configuration du texte
+        iterationText.setFont(font);
+        iterationText.setCharacterSize(20);
+        iterationText.setFillColor(sf::Color::Black);
+        iterationText.setPosition(10, grid.getRows() * cellSize + 10);
     }
 
     void handleInput(sf::Event& event) {
@@ -69,7 +85,7 @@ public:
 
             window.clear(sf::Color::White);
             grid.draw(window);
-            window.draw(iterationText); // Affichage du compteur
+            window.draw(iterationText);
             window.display();
         }
     }
