@@ -1,6 +1,8 @@
 #include <iostream>
 #include "Game.h"
 
+// Esteban grosse pute
+
 int main() {
     int rows, cols, delay;
     float cellSize = 20.0f;
