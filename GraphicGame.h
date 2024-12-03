@@ -13,7 +13,7 @@ private:
     sf::Text iterationText;
 
     bool running;    // Indique si la simulation est en cours
-    bool editing;    // Mode édition pour cliquer sur les cellules
+    bool editing;    // Mode Ã©dition pour cliquer sur les cellules
     int iterationCount;
     int delay;
 
@@ -36,7 +36,7 @@ public:
 
     GraphicGame(const std::string& filename, float cellSize, int delayMS)
         : grid(0, 0, cellSize),
-        window(sf::VideoMode(800, 600), "Jeu de la Vie"), // Taille par défaut
+        window(sf::VideoMode(800, 600), "Jeu de la Vie"), // Taille par dÃ©faut
         running(false), editing(false), iterationCount(0), delay(delayMS) {
 
         grid.loadFromFile(filename);

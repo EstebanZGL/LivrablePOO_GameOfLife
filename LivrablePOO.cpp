@@ -16,7 +16,7 @@ int main() {
         std::string filename;
         std::cin >> filename;
 
-
+        
 
         std::cout << "Voulez-vous (G)raphique ou (C)onsole ? (G/C) : ";
         std::cin >> choice;
