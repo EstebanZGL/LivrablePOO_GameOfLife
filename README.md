@@ -8,11 +8,11 @@ Voici les différentes fonctionnalités :
 
 -choix du temps entre les itérations	
 
-(-Les cellules placées aux extrémités de la grille sont adjacentes )
+*(-Les cellules placées aux extrémités de la grille sont adjacentes )*
 
-(-Présence d'obstacles sur la grille)
+*(-Présence d'obstacles sur la grille)*
 
-(-Constructions préprogrammées avec la touche "b")	
+*(-Constructions préprogrammées avec la touche "b")*
 
 -Parallélisement des cellules
 
