@@ -7,7 +7,7 @@ int main() {
     int rows, cols, delay;
     float cellSize = 20.0f;
 
-    std::cout << "Bienvenue dans le Jeu de la Vie avec SFML !\n";
+    std::cout << "Bienvenue dans le Jeu de la Vie !\n";
     std::cout << "Entrez le nombre de lignes : ";
     std::cin >> rows;
     std::cout << "Entrez le nombre de colonnes : ";
