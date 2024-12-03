@@ -1,7 +1,7 @@
 #include <iostream>
 #include "Game.h"
 
-// Esteban grosse pute
+// Esteban le plus gros bg de l'info
 
 int main() {
     int rows, cols, delay;
