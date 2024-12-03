@@ -27,15 +27,23 @@ public:
     }
 
     void displayGrid() const {
+        printf("\033c"); // Efface la console
         for (int x = 0; x < grid.getRows(); ++x) {
             for (int y = 0; y < grid.getCols(); ++y) {
-                std::cout << (grid.getCells()[x][y].getAlive() ? "1" : "0") << " ";
+                if (grid.getCells()[x][y].getAlive()) {
+                    // Afficher 1 en rouge
+                    std::cout << "\033[31m1\033[0m "; // 31 est le code ANSI pour le rouge
+                }
+                else {
+                    std::cout << "0 "; // Afficher 0 en couleur par défaut
+                }
             }
             std::cout << std::endl;
         }
         std::cout << "Iterations: " << iterationCount << std::endl;
         std::cout << "Entrez sur 'q' pour quitter." << std::endl;
     }
+
 
     void inputThread() {
         char input;
