@@ -16,12 +16,16 @@ int main() {
         std::string filename;
         std::cin >> filename;
 
+        
+
         std::cout << "Voulez-vous (G)raphique ou (C)onsole ? (G/C) : ";
         std::cin >> choice;
 
         if (choice == 'G' || choice == 'g') {
+            std::cout << "Entrez le temps entre chaque iteration (en millisecondes) : ";
+            std::cin >> delay;
             try {
-                GraphicGame graphicGame(filename, cellSize);
+                GraphicGame graphicGame(filename, cellSize, delay);
                 graphicGame.start();
             }
             catch (const std::exception& e) {
