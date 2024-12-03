@@ -29,6 +29,9 @@ private:
 public:
     Grid(int r, int c, float size) : rows(r), cols(c), cellSize(size), cells(r, std::vector<Cell>(c)) {}
 
+    const std::vector<std::vector<Cell>>& getCells() const { return cells; }
+
+
     void loadFromFile(const std::string& filename) {
         std::ifstream file(filename);
         if (file.is_open()) {

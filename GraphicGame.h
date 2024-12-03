@@ -5,7 +5,7 @@
 #include <iostream>
 #include "Grid.h"
 
-class Game {
+class GraphicGame {
 private:
     Grid grid;
     sf::RenderWindow window;
@@ -18,7 +18,7 @@ private:
     int delay;
 
 public:
-    Game(int rows, int cols, float cellSize, int delayMs)
+    GraphicGame(int rows, int cols, float cellSize, int delayMs)
         : grid(rows, cols, cellSize),
         window(sf::VideoMode(cols* cellSize, rows* cellSize + 60), "Jeu de la Vie"),
         running(false), editing(true), iterationCount(0), delay(delayMs) {
@@ -33,7 +33,7 @@ public:
         iterationText.setPosition(10, rows * cellSize + 10);
     }
 
-    Game(const std::string& filename, float cellSize)
+    GraphicGame(const std::string& filename, float cellSize)
         : grid(0, 0, cellSize),
         window(sf::VideoMode(800, 600), "Jeu de la Vie"), // Taille par défaut
         running(false), editing(false), iterationCount(0), delay(100) {
