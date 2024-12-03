@@ -1,6 +1,8 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
+//test 2
+
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "Grid.h"
