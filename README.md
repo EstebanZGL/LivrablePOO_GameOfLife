@@ -11,8 +11,11 @@ Voici les différentes fonctionnalités :
 
 
 Mode graphique :
+
 -Appuyer sur "p" pour mettre en pause le jeu
+
 -cliquer sur les cases pour les rendre "vivantes"
 
 Mode console :
+
 -sauvegarde des itérations faites
