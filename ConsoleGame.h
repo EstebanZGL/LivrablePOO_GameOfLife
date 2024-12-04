@@ -1,14 +1,12 @@
+#define CONSOLEGAME_HPP 
 
-
-#define CONSOLEGAME_HPP // Définition de la macro CONSOLEGAME_HPP pour éviter de multiples inclusions.
-
-#include <iostream> // Inclusion pour les entrées/sorties standard.
-#include "Grid.h" // Inclusion de la classe Grid.
-#include <thread> // Inclusion pour la gestion des threads.
-#include <chrono> // Inclusion pour la gestion du temps et des délais.
-#include <limits> // Inclusion pour gérer les limites des types numériques.
-#include <atomic> // Inclusion pour les variables atomiques (thread-safe).
-#include <fstream> // Inclusion pour les opérations sur les fichiers.
+#include <iostream> 
+#include "Grid.h" 
+#include <thread> 
+#include <chrono> 
+#include <limits> 
+#include <atomic> 
+#include <fstream> 
 
 
 class ConsoleGame { // Classe représentant le jeu en mode console.
