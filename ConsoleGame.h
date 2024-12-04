@@ -1,5 +1,5 @@
 #ifndef CONSOLEGAME_HPP // Protection contre les inclusions multiples.
-#define CONSOLEGAME_HPP // D�finition de la macro CONSOLEGAME_HPP pour �viter les inclusions multiples.
+#define CONSOLEGAME_HPP // Définition de la macro CONSOLEGAME_HPP pour éviter les inclusions multiples.
 
 #include <iostream>
 #include "Grid.h"
@@ -7,14 +7,14 @@
 #include <chrono>
 #include <limits>
 #include <atomic>
-#include <fstream> // Inclure pour les opérations de fichier
+#include <fstream> // Inclure pour les opÃ©rations de fichier
 
 class ConsoleGame {
 private:
     Grid grid;
     int iterationCount;
     int delay;
-    std::atomic<bool> running; // Variable atomique pour contrôler l'exécution
+    std::atomic<bool> running; // Variable atomique pour contrÃ´ler l'exÃ©cution
     std::ofstream outputFile; // Fichier de sortie
 
 public:
@@ -51,52 +51,54 @@ public:
                 }
                 else {
                     std::cout << "0 "; // 0 en couleur par défaut
+
                 }
             }
-            std::cout << std::endl;
+            std::cout << std::endl; // Nouvelle ligne après chaque rangée.
         }
+
         std::cout << "Iterations: " << iterationCount << std::endl;
         std::cout << "Entrez sur 'q' pour quitter." << std::endl;
 
-        // Sauvegarder l'état actuel dans le fichier
+        // Sauvegarder l'Ã©tat actuel dans le fichier
         saveCurrentState();
     }
 
     void saveCurrentState() { // Ne pas marquer comme const
         if (outputFile.is_open()) {
-            outputFile << "Itération: " << iterationCount << "\n";
+            outputFile << "ItÃ©ration: " << iterationCount << "\n";
             for (int x = 0; x < grid.getRows(); ++x) {
                 for (int y = 0; y < grid.getCols(); ++y) {
                     outputFile << (grid.getCells()[x][y].getAlive() ? "1" : "0") << " ";
                 }
                 outputFile << "\n";
             }
-            outputFile << "\n"; // Ligne vide entre les itérations
+            outputFile << "\n"; // Ligne vide entre les itÃ©rations
         }
     }
 
     void inputThread() {
+
         char input;
-        while (running) {
-            std::cin >> input;
+        while (running) { // Boucle continue tant que le jeu est en cours.
+            std::cin >> input; // Lecture de l'entrée utilisateur.
             if (input == 'q') {
-                running = false; // Met fin à l'exécution
+                running = false; // Arrête le jeu si 'q' est saisi.
             }
-            // Ignore le reste de la ligne
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore le reste de la ligne.
         }
     }
 
-    void start() {
-        std::thread inputThread(&ConsoleGame::inputThread, this); // Lancer le thread d'entrée
-        while (running) {
-            displayGrid();
-            grid.updateGrid();
-            iterationCount++;
-            std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+    void start() { // Méthode pour démarrer le jeu.
+        std::thread inputThread(&ConsoleGame::inputThread, this); // Lancement du thread d'entrée utilisateur.
+        while (running) { // Boucle principale du jeu tant que le jeu est en cours.
+            displayGrid(); // Affiche la grille.
+            grid.updateGrid(); // Met à jour l'état de la grille.
+            iterationCount++; // Incrémente le compteur d'itérations.
+            std::this_thread::sleep_for(std::chrono::milliseconds(delay)); // Pause entre les mises à jour.
         }
-        inputThread.join(); // Attendre que le thread d'entrée se termine
+        inputThread.join(); // Attend la fin du thread d'entrée utilisateur.
     }
 };
 
-#endif
+#endif // Fin de la protection contre les inclusions multiples.
