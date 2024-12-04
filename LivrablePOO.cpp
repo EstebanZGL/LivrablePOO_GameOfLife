@@ -21,9 +21,10 @@ int main() {
         std::cout << "Voulez-vous (G)raphique ou (C)onsole ? (G/C) : ";
         std::cin >> choice;
 
+        std::cout << "Entrez le temps entre chaque iteration (en millisecondes) : ";
+        std::cin >> delay;
+
         if (choice == 'G' || choice == 'g') {
-            std::cout << "Entrez le temps entre chaque iteration (en millisecondes) : ";
-            std::cin >> delay;
             try {
                 GraphicGame graphicGame(filename, cellSize, delay);
                 graphicGame.start();
@@ -34,8 +35,6 @@ int main() {
             }
         }
         else {
-            std::cout << "Entrez le temps entre chaque iteration (en millisecondes) : ";
-            std::cin >> delay;
             try {
                 ConsoleGame consoleGame(filename, delay);
                 consoleGame.start();
@@ -45,6 +44,7 @@ int main() {
                 return 1;
             }
         }
+        
     }
     else {
         std::cout << "Entrez le nombre de lignes : ";
