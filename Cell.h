@@ -1,15 +1,15 @@
-#ifndef CELL_HPP
-#define CELL_HPP
+#ifndef CELL_HPP // Protection contre les inclusions multiples.
+#define CELL_HPP // Définition de la macro CELL_HPP pour éviter les inclusions multiples.
 
 class Cell {
 private:
-    bool alive;
+    bool alive; // Attribut pour stocker l'état de la cellule (true = vivante, false = morte).
 
 public:
-    Cell() : alive(false) {}
+    Cell() : alive(false) {} // Constructeur par défaut, initialise alive à false (cellule morte).
 
-    bool getAlive() const { return alive; }
-    void setAlive(bool state) { alive = state; }
+    bool getAlive() const { return alive; } // Retourne l'état de la cellule (vivante ou morte).
+    void setAlive(bool state) { alive = state; } // Modifie l'état de la cellule avec le paramètre donné.
 };
 
-#endif
+#endif // Fin de la protection contre les inclusions multiples.
