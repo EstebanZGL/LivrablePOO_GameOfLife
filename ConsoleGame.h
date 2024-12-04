@@ -7,14 +7,14 @@
 #include <chrono>
 #include <limits>
 #include <atomic>
-#include <fstream> // Inclure pour les opérations de fichier
+#include <fstream> // Inclure pour les opÃ©rations de fichier
 
 class ConsoleGame {
 private:
     Grid grid;
     int iterationCount;
     int delay;
-    std::atomic<bool> running; // Variable atomique pour contrôler l'exécution
+    std::atomic<bool> running; // Variable atomique pour contrÃ´ler l'exÃ©cution
     std::ofstream outputFile; // Fichier de sortie
 
 public:
@@ -60,20 +60,20 @@ public:
         std::cout << "Iterations: " << iterationCount << std::endl;
         std::cout << "Entrez sur 'q' pour quitter." << std::endl;
 
-        // Sauvegarder l'état actuel dans le fichier
+        // Sauvegarder l'Ã©tat actuel dans le fichier
         saveCurrentState();
     }
 
     void saveCurrentState() { // Ne pas marquer comme const
         if (outputFile.is_open()) {
-            outputFile << "Itération: " << iterationCount << "\n";
+            outputFile << "ItÃ©ration: " << iterationCount << "\n";
             for (int x = 0; x < grid.getRows(); ++x) {
                 for (int y = 0; y < grid.getCols(); ++y) {
                     outputFile << (grid.getCells()[x][y].getAlive() ? "1" : "0") << " ";
                 }
                 outputFile << "\n";
             }
-            outputFile << "\n"; // Ligne vide entre les itérations
+            outputFile << "\n"; // Ligne vide entre les itÃ©rations
         }
     }
 
