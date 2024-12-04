@@ -1,14 +1,12 @@
+#define CONSOLEGAME_HPP 
 
-
-#define CONSOLEGAME_HPP // Définition de la macro CONSOLEGAME_HPP pour éviter de multiples inclusions.
-
-#include <iostream> // Inclusion pour les entrées/sorties standard.
-#include "Grid.h" // Inclusion de la classe Grid.
-#include <thread> // Inclusion pour la gestion des threads.
-#include <chrono> // Inclusion pour la gestion du temps et des délais.
-#include <limits> // Inclusion pour gérer les limites des types numériques.
-#include <atomic> // Inclusion pour les variables atomiques (thread-safe).
-#include <fstream> // Inclusion pour les opérations sur les fichiers.
+#include <iostream> 
+#include "Grid.h" 
+#include <thread> 
+#include <chrono> 
+#include <limits> 
+#include <atomic> 
+#include <fstream> 
 
 
 class ConsoleGame { // Classe représentant le jeu en mode console.
@@ -51,19 +49,19 @@ public:
     // Méthode pour afficher la grille dans la console.
     void displayGrid() {
         printf("\033c"); // Efface la console.
-        for (int x = 0; x < grid.getligne(); ++x) { // Parcourt chaque ligne de la grille.
-            for (int y = 0; y < grid.getcolonne(); ++y) { // Parcourt chaque colonne de la grille.
+        for (int x = 0; x < grid.getligne(); ++x) { 
+            for (int y = 0; y < grid.getcolonne(); ++y) { 
                 if (grid.getCells()[x][y].getAlive()) { // Si la cellule est vivante.
-                    std::cout << "\033[31m1\033[0m "; // Affiche "1" en rouge.
+                    std::cout << "\033[31m1\033[0m "; // Affiche "1" en rouge 033=1 en ESC.
                 }
                 else {
-                    std::cout << "0 "; // Sinon, affiche "0" en couleur par défaut.
+                    std::cout << "0 "; 
                 }
             }
-            std::cout << std::endl; // Nouvelle ligne après chaque rangée.
+            std::cout << std::endl; 
         }
 
-        // Affiche le nombre d'itérations effectuées.
+        
         std::cout << "Iterations: " << iterationCount << std::endl;
         std::cout << "Entrez sur 'q' pour quitter." << std::endl;
 
@@ -73,31 +71,30 @@ public:
 
     // Méthode pour sauvegarder l'état actuel de la grille dans un fichier.
     void saveCurrentState() {
-        if (outputFile.is_open()) { // Vérifie si le fichier est ouvert.
-            outputFile << "Itération: " << iterationCount << "\n"; // Écrit le numéro d'itération.
-            for (int x = 0; x < grid.getligne(); ++x) { // Parcourt chaque ligne.
-                for (int y = 0; y < grid.getcolonne(); ++y) { // Parcourt chaque colonne.
-                    outputFile << (grid.getCells()[x][y].getAlive() ? "1" : "0") << " "; // Écrit l'état des cellules.
+        if (outputFile.is_open()) { 
+            outputFile << "Itération: " << iterationCount << "\n"; 
+            for (int x = 0; x < grid.getligne(); ++x) { 
+                for (int y = 0; y < grid.getcolonne(); ++y) { 
+                    outputFile << (grid.getCells()[x][y].getAlive() ? "1" : "0") << " ";
 
                 }
-                outputFile << "\n"; // Nouvelle ligne après chaque rangée.
+                outputFile << "\n"; 
             }
 
-            outputFile << "\n"; // Ligne vide entre les itérations.
+            outputFile << "\n"; 
         }
     }
 
     // Méthode exécutée dans un thread séparé pour gérer les entrées utilisateur.
     void inputThread() {
-        char input; // Variable pour stocker l'entrée utilisateur.
+        char input; 
         while (running) { // Boucle continue tant que le jeu est en cours.
-            std::cin >> input; // Lecture de l'entrée utilisateur.
-            if (input == 'q') { // Si l'utilisateur entre 'q'.
-                running = false; // Arrête le jeu.
+            std::cin >> input; 
+            if (input == 'q') { 
+                running = false; 
 
             }
-            // Ignore le reste de la ligne pour éviter les problèmes d'entrée.
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');// Ignore le reste de la ligne pour éviter les problèmes d'entrée.
         }
     }
 
@@ -106,11 +103,11 @@ public:
     void start() {
         // Lancement du thread pour gérer les entrées utilisateur.
         std::thread inputThread(&ConsoleGame::inputThread, this);
-        while (running) { // Boucle principale du jeu tant qu'il est en cours.
+        while (running) { 
 
-            displayGrid(); // Affiche la grille.
-            grid.updateGrid(); // Met à jour l'état de la grille.
-            iterationCount++; // Incrémente le compteur d'itérations.
+            displayGrid(); 
+            grid.updateGrid(); 
+            iterationCount++; 
             std::this_thread::sleep_for(std::chrono::milliseconds(delay)); // Pause entre les mises à jour.
         }
 
@@ -118,4 +115,3 @@ public:
     }
 };
 
-#endif // Fin de la protection contre les inclusions multiples.
