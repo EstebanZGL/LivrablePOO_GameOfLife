@@ -118,4 +118,3 @@ public:
     }
 };
 
-#endif // Fin de la protection contre les inclusions multiples.
