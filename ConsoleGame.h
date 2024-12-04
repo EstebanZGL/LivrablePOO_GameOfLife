@@ -107,9 +107,9 @@ public:
         std::thread inputThread(&ConsoleGame::inputThread, this);
         while (running) { 
 
-            displayGrid(); // Affiche la grille.
-            grid.updateGrid(); // Met à jour l'état de la grille.
-            iterationCount++; // Incrémente le compteur d'itérations.
+            displayGrid(); 
+            grid.updateGrid(); 
+            iterationCount++; 
             std::this_thread::sleep_for(std::chrono::milliseconds(delay)); // Pause entre les mises à jour.
         }
 
