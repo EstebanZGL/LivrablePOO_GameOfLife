@@ -44,8 +44,8 @@ public:
 
     void displayGrid() {
         printf("\033c"); // Efface la console
-        for (int x = 0; x < grid.getRows(); ++x) {
-            for (int y = 0; y < grid.getCols(); ++y) {
+        for (int x = 0; x < grid.getligne(); ++x) {
+            for (int y = 0; y < grid.getcolonne(); ++y) {
                 if (grid.getCells()[x][y].getAlive()) {
                     std::cout << "\033[31m1\033[0m "; // 1 en rouge
                 }
@@ -67,8 +67,8 @@ public:
     void saveCurrentState() { // Ne pas marquer comme const
         if (outputFile.is_open()) {
             outputFile << "ItÃ©ration: " << iterationCount << "\n";
-            for (int x = 0; x < grid.getRows(); ++x) {
-                for (int y = 0; y < grid.getCols(); ++y) {
+            for (int x = 0; x < grid.getligne(); ++x) {
+                for (int y = 0; y < grid.getcolonne(); ++y) {
                     outputFile << (grid.getCells()[x][y].getAlive() ? "1" : "0") << " ";
                 }
                 outputFile << "\n";
