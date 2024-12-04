@@ -1,6 +1,7 @@
 #include <iostream> // Inclusion de la biblioth�que standard pour les entr�es/sorties.
 #include "GraphicGame.h" // Inclusion de la classe pour le mode graphique.
 #include "ConsoleGame.h" // Inclusion de la classe pour le mode console.
+#include <fstream>
 
 int main() { // Point d'entr�e principal du programme.
     int ligne, colonne, delay; // Variables pour les dimensions de la grille et le d�lai entre les it�rations.
@@ -53,7 +54,7 @@ int main() { // Point d'entr�e principal du programme.
                 return 1; // Termine le programme avec un code d'erreur.
             }
         }
-        
+
     }
     else { // Si l'utilisateur choisit d'�diter manuellement.
         // Demande les dimensions de la grille.
@@ -77,4 +78,3 @@ int main() { // Point d'entr�e principal du programme.
 
     return 0; // Retourne 0 pour indiquer que le programme s'est termin� avec succ�s.
 }
-
