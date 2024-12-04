@@ -1,67 +1,103 @@
 #ifndef CONSOLEGAME_HPP // Protection contre les inclusions multiples.
-#define CONSOLEGAME_HPP // Définition de la macro CONSOLEGAME_HPP pour éviter les inclusions multiples.
+#define CONSOLEGAME_HPP // DÃ©finition de la macro CONSOLEGAME_HPP pour Ã©viter les inclusions multiples.
 
-#include <iostream> // Inclusion de la bibliothèque pour les entrées/sorties standard.
-#include "Grid.h" // Inclusion de la classe Grid (grille).
-#include <thread> // Inclusion pour gérer les threads.
-#include <chrono> // Inclusion pour gérer les délais temporels.
-#include <limits> // Inclusion pour définir les limites des types numériques.
-#include <atomic> // Inclusion pour utiliser des variables atomiques.
+#include <iostream>
+#include "Grid.h"
+#include <thread>
+#include <chrono>
+#include <limits>
+#include <atomic>
+#include <fstream> // Inclure pour les opÃ©rations de fichier
 
 class ConsoleGame {
 private:
-    Grid grid; // Instance de la grille pour le jeu.
-    int iterationCount; // Compteur du nombre d'itérations.
-    int delay; // Délai entre les mises à jour de la grille (en millisecondes).
-    std::atomic<bool> running; // Variable atomique pour contrôler l'exécution.
+    Grid grid;
+    int iterationCount;
+    int delay;
+    std::atomic<bool> running; // Variable atomique pour contrÃ´ler l'exÃ©cution
+    std::ofstream outputFile; // Fichier de sortie
 
 public:
-    ConsoleGame(int ligne, int colonne, int delayMs) // Constructeur initialisant une grille de taille donnée.
-        : grid(ligne, colonne, 1.0), // Initialisation de la grille.
-        iterationCount(0), delay(delayMs), running(true) {} // Initialisation des autres variables membres.
-
-    ConsoleGame(const std::string& filename, int delayMs) // Constructeur initialisant une grille à partir d'un fichier.
-        : grid(0, 0, 1.0), iterationCount(0), delay(delayMs), running(true) {
-        grid.loadFromFile(filename); // Chargement de la grille depuis le fichier.
+    ConsoleGame(int rows, int cols, int delayMs)
+        : grid(rows, cols, 1.0f),
+        iterationCount(0), delay(delayMs), running(true) {
+        outputFile.open("sauvegarde.txt"); // Ouvrir le fichier de sortie
+        if (!outputFile.is_open()) {
+            throw std::runtime_error("Impossible d'ouvrir le fichier de sauvegarde.");
+        }
     }
 
-    void displayGrid() const { // Méthode pour afficher la grille dans la console.
-        printf("\033c"); // Efface la console.
-        for (int x = 0; x < grid.getligne(); ++x) { // Parcours des lignes de la grille.
-            for (int y = 0; y < grid.getcolonne(); ++y) { // Parcours des colonnes de la grille.
+    ConsoleGame(const std::string& filename, int delayMs)
+        : grid(0, 0, 1.0f), iterationCount(0), delay(delayMs), running(true) {
+        grid.loadFromFile(filename);
+        outputFile.open("sauvegarde.txt"); // Ouvrir le fichier de sortie
+        if (!outputFile.is_open()) {
+            throw std::runtime_error("Impossible d'ouvrir le fichier de sauvegarde.");
+        }
+    }
+
+    ~ConsoleGame() {
+        if (outputFile.is_open()) {
+            outputFile.close(); // Fermer le fichier de sortie
+        }
+    }
+
+    void displayGrid() {
+        printf("\033c"); // Efface la console
+        for (int x = 0; x < grid.getRows(); ++x) {
+            for (int y = 0; y < grid.getCols(); ++y) {
                 if (grid.getCells()[x][y].getAlive()) {
-                    std::cout << "\033[31m1\033[0m "; // Affiche un "1" en rouge si la cellule est vivante.
+                    std::cout << "\033[31m1\033[0m "; // 1 en rouge
                 }
                 else {
-                    std::cout << "0 "; // Affiche un "0" si la cellule est morte.
+                    std::cout << "0 "; // 0 en couleur par dÃ©faut
+
                 }
             }
-            std::cout << std::endl; // Nouvelle ligne après chaque rangée.
+            std::cout << std::endl; // Nouvelle ligne aprÃ¨s chaque rangÃ©e.
         }
-        std::cout << "Iterations: " << iterationCount << std::endl; // Affiche le nombre d'itérations.
-        std::cout << "Entrez sur 'q' pour quitter." << std::endl; // Message pour quitter le jeu.
+
+        std::cout << "Iterations: " << iterationCount << std::endl;
+        std::cout << "Entrez sur 'q' pour quitter." << std::endl;
+
+        // Sauvegarder l'Ã©tat actuel dans le fichier
+        saveCurrentState();
     }
 
-    void inputThread() { // Méthode pour gérer les entrées utilisateur dans un thread séparé.
+    void saveCurrentState() { // Ne pas marquer comme const
+        if (outputFile.is_open()) {
+            outputFile << "ItÃ©ration: " << iterationCount << "\n";
+            for (int x = 0; x < grid.getRows(); ++x) {
+                for (int y = 0; y < grid.getCols(); ++y) {
+                    outputFile << (grid.getCells()[x][y].getAlive() ? "1" : "0") << " ";
+                }
+                outputFile << "\n";
+            }
+            outputFile << "\n"; // Ligne vide entre les itÃ©rations
+        }
+    }
+
+    void inputThread() {
+
         char input;
         while (running) { // Boucle continue tant que le jeu est en cours.
-            std::cin >> input; // Lecture de l'entrée utilisateur.
+            std::cin >> input; // Lecture de l'entrÃ©e utilisateur.
             if (input == 'q') {
-                running = false; // Arrête le jeu si 'q' est saisi.
+                running = false; // ArrÃªte le jeu si 'q' est saisi.
             }
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore le reste de la ligne.
         }
     }
 
-    void start() { // Méthode pour démarrer le jeu.
-        std::thread inputThread(&ConsoleGame::inputThread, this); // Lancement du thread d'entrée utilisateur.
+    void start() { // MÃ©thode pour dÃ©marrer le jeu.
+        std::thread inputThread(&ConsoleGame::inputThread, this); // Lancement du thread d'entrÃ©e utilisateur.
         while (running) { // Boucle principale du jeu tant que le jeu est en cours.
             displayGrid(); // Affiche la grille.
-            grid.updateGrid(); // Met à jour l'état de la grille.
-            iterationCount++; // Incrémente le compteur d'itérations.
-            std::this_thread::sleep_for(std::chrono::milliseconds(delay)); // Pause entre les mises à jour.
+            grid.updateGrid(); // Met Ã  jour l'Ã©tat de la grille.
+            iterationCount++; // IncrÃ©mente le compteur d'itÃ©rations.
+            std::this_thread::sleep_for(std::chrono::milliseconds(delay)); // Pause entre les mises Ã  jour.
         }
-        inputThread.join(); // Attend la fin du thread d'entrée utilisateur.
+        inputThread.join(); // Attend la fin du thread d'entrÃ©e utilisateur.
     }
 };
 

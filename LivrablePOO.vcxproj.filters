@@ -61,12 +61,18 @@
     <ClInclude Include="Grid.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="Game.h">
+    <ClInclude Include="ConsoleGame.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicGame.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="input.txt">
+      <Filter>Fichiers de ressources</Filter>
+    </Text>
+    <Text Include="sauvegarde.txt">
       <Filter>Fichiers de ressources</Filter>
     </Text>
   </ItemGroup>
