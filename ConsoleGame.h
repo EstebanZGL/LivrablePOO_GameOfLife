@@ -1,67 +1,111 @@
 #ifndef CONSOLEGAME_HPP // Protection contre les inclusions multiples.
-#define CONSOLEGAME_HPP // DÈfinition de la macro CONSOLEGAME_HPP pour Èviter les inclusions multiples.
+#define CONSOLEGAME_HPP // D√©finition de la macro CONSOLEGAME_HPP pour √©viter de multiples inclusions.
 
-#include <iostream> // Inclusion de la bibliothËque pour les entrÈes/sorties standard.
-#include "Grid.h" // Inclusion de la classe Grid (grille).
-#include <thread> // Inclusion pour gÈrer les threads.
-#include <chrono> // Inclusion pour gÈrer les dÈlais temporels.
-#include <limits> // Inclusion pour dÈfinir les limites des types numÈriques.
-#include <atomic> // Inclusion pour utiliser des variables atomiques.
+#include <iostream> // Inclusion pour les entr√©es/sorties standard.
+#include "Grid.h" // Inclusion de la classe Grid.
+#include <thread> // Inclusion pour la gestion des threads.
+#include <chrono> // Inclusion pour la gestion du temps et des d√©lais.
+#include <limits> // Inclusion pour g√©rer les limites des types num√©riques.
+#include <atomic> // Inclusion pour les variables atomiques (thread-safe).
+#include <fstream> // Inclusion pour les op√©rations sur les fichiers.
 
-class ConsoleGame {
+class ConsoleGame { // Classe repr√©sentant le jeu en mode console.
 private:
-    Grid grid; // Instance de la grille pour le jeu.
-    int iterationCount; // Compteur du nombre d'itÈrations.
-    int delay; // DÈlai entre les mises ‡ jour de la grille (en millisecondes).
-    std::atomic<bool> running; // Variable atomique pour contrÙler l'exÈcution.
+    Grid grid; // Instance de la grille repr√©sentant l'√©tat du jeu.
+    int iterationCount; // Compteur d'it√©rations.
+    int delay; // D√©lai entre chaque mise √† jour de la grille (en millisecondes).
+    std::atomic<bool> running; // Variable atomique pour contr√¥ler l'ex√©cution du jeu (thread-safe).
+    std::ofstream outputFile; // Flux de fichier pour sauvegarder les √©tats du jeu.
 
 public:
-    ConsoleGame(int ligne, int colonne, int delayMs) // Constructeur initialisant une grille de taille donnÈe.
-        : grid(ligne, colonne, 1.0), // Initialisation de la grille.
-        iterationCount(0), delay(delayMs), running(true) {} // Initialisation des autres variables membres.
-
-    ConsoleGame(const std::string& filename, int delayMs) // Constructeur initialisant une grille ‡ partir d'un fichier.
-        : grid(0, 0, 1.0), iterationCount(0), delay(delayMs), running(true) {
-        grid.loadFromFile(filename); // Chargement de la grille depuis le fichier.
+    // Constructeur pour initialiser le jeu avec une grille vide.
+    ConsoleGame(int ligne, int colonne, int delayms)
+        : grid(ligne, colonne, 1.0), 
+        iterationCount(0), delay(delayms), running(true) { 
+        outputFile.open("sauvegarde.txt"); // Ouvre un fichier pour sauvegarder les √©tats.
+        if (!outputFile.is_open()) { // V√©rifie si le fichier s'est bien ouvert.
+            throw std::runtime_error("Impossible d'ouvrir le fichier de sauvegarde."); 
+        }
     }
 
-    void displayGrid() const { // MÈthode pour afficher la grille dans la console.
+    // Constructeur pour initialiser le jeu √† partir d'un fichier existant.
+    ConsoleGame(const std::string& filename, int delayms)
+        : grid(0, 0, 1.0f), iterationCount(0), delay(delayms), running(true) { 
+        grid.loadFromFile(filename); 
+        outputFile.open("sauvegarde.txt"); // Ouvre un fichier pour sauvegarder les √©tats.
+        if (!outputFile.is_open()) { // V√©rifie si le fichier s'est bien ouvert.
+            throw std::runtime_error("Impossible d'ouvrir le fichier de sauvegarde.");
+        }
+    }
+
+    // Destructeur pour fermer le fichier de sortie si n√©cessaire.
+    ~ConsoleGame() {
+        if (outputFile.is_open()) { 
+            outputFile.close(); 
+        }
+    }
+
+    // M√©thode pour afficher la grille dans la console.
+    void displayGrid() {
         printf("\033c"); // Efface la console.
-        for (int x = 0; x < grid.getligne(); ++x) { // Parcours des lignes de la grille.
-            for (int y = 0; y < grid.getcolonne(); ++y) { // Parcours des colonnes de la grille.
-                if (grid.getCells()[x][y].getAlive()) {
-                    std::cout << "\033[31m1\033[0m "; // Affiche un "1" en rouge si la cellule est vivante.
+        for (int x = 0; x < grid.getligne(); ++x) { // Parcourt chaque ligne de la grille.
+            for (int y = 0; y < grid.getcolonne(); ++y) { // Parcourt chaque colonne de la grille.
+                if (grid.getCells()[x][y].getAlive()) { // Si la cellule est vivante.
+                    std::cout << "\033[31m1\033[0m "; // Affiche "1" en rouge.
                 }
                 else {
-                    std::cout << "0 "; // Affiche un "0" si la cellule est morte.
+                    std::cout << "0 "; // Sinon, affiche "0" en couleur par d√©faut.
                 }
             }
-            std::cout << std::endl; // Nouvelle ligne aprËs chaque rangÈe.
+            std::cout << std::endl; // Nouvelle ligne apr√®s chaque rang√©e.
         }
-        std::cout << "Iterations: " << iterationCount << std::endl; // Affiche le nombre d'itÈrations.
-        std::cout << "Entrez sur 'q' pour quitter." << std::endl; // Message pour quitter le jeu.
+
+        // Affiche le nombre d'it√©rations effectu√©es.
+        std::cout << "Iterations: " << iterationCount << std::endl;
+        std::cout << "Entrez sur 'q' pour quitter." << std::endl;
+
+        // Sauvegarde l'√©tat actuel de la grille dans le fichier.
+        saveCurrentState();
     }
 
-    void inputThread() { // MÈthode pour gÈrer les entrÈes utilisateur dans un thread sÈparÈ.
-        char input;
-        while (running) { // Boucle continue tant que le jeu est en cours.
-            std::cin >> input; // Lecture de l'entrÈe utilisateur.
-            if (input == 'q') {
-                running = false; // ArrÍte le jeu si 'q' est saisi.
+    // M√©thode pour sauvegarder l'√©tat actuel de la grille dans un fichier.
+    void saveCurrentState() {
+        if (outputFile.is_open()) { // V√©rifie si le fichier est ouvert.
+            outputFile << "It√©ration: " << iterationCount << "\n"; // √âcrit le num√©ro d'it√©ration.
+            for (int x = 0; x < grid.getligne(); ++x) { // Parcourt chaque ligne.
+                for (int y = 0; y < grid.getcolonne(); ++y) { // Parcourt chaque colonne.
+                    outputFile << (grid.getCells()[x][y].getAlive() ? "1" : "0") << " "; // √âcrit l'√©tat des cellules.
+                }
+                outputFile << "\n"; // Nouvelle ligne apr√®s chaque rang√©e.
             }
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore le reste de la ligne.
+            outputFile << "\n"; // Ligne vide entre les it√©rations.
         }
     }
 
-    void start() { // MÈthode pour dÈmarrer le jeu.
-        std::thread inputThread(&ConsoleGame::inputThread, this); // Lancement du thread d'entrÈe utilisateur.
-        while (running) { // Boucle principale du jeu tant que le jeu est en cours.
-            displayGrid(); // Affiche la grille.
-            grid.updateGrid(); // Met ‡ jour l'Ètat de la grille.
-            iterationCount++; // IncrÈmente le compteur d'itÈrations.
-            std::this_thread::sleep_for(std::chrono::milliseconds(delay)); // Pause entre les mises ‡ jour.
+    // M√©thode ex√©cut√©e dans un thread s√©par√© pour g√©rer les entr√©es utilisateur.
+    void inputThread() {
+        char input; // Variable pour stocker l'entr√©e utilisateur.
+        while (running) { // Boucle continue tant que le jeu est en cours.
+            std::cin >> input; // Lecture de l'entr√©e utilisateur.
+            if (input == 'q') { // Si l'utilisateur entre 'q'.
+                running = false; // Arr√™te le jeu.
+            }
+            // Ignore le reste de la ligne pour √©viter les probl√®mes d'entr√©e.
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
-        inputThread.join(); // Attend la fin du thread d'entrÈe utilisateur.
+    }
+
+    // M√©thode pour d√©marrer le jeu.
+    void start() {
+        // Lancement du thread pour g√©rer les entr√©es utilisateur.
+        std::thread inputThread(&ConsoleGame::inputThread, this);
+        while (running) { // Boucle principale du jeu tant qu'il est en cours.
+            displayGrid(); // Affiche la grille.
+            grid.updateGrid(); // Met √† jour l'√©tat de la grille.
+            iterationCount++; // Incr√©mente le compteur d'it√©rations.
+            std::this_thread::sleep_for(std::chrono::milliseconds(delay)); // Pause entre les mises √† jour.
+        }
+        inputThread.join(); // Attend que le thread d'entr√©e utilisateur se termine.
     }
 };
 
