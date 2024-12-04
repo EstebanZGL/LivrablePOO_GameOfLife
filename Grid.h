@@ -1,9 +1,9 @@
 #ifndef GRID_HPP // Protection contre les inclusions multiples.
-#define GRID_HPP // DÈfinition de la macro GRID_HPP pour Èviter les inclusions multiples.
+#define GRID_HPP // D√©finition de la macro GRID_HPP pour √©viter les inclusions multiples.
 
-#include <SFML/Graphics.hpp> // Inclusion de la bibliothËque SFML pour la gestion graphique.
-#include <vector> // Inclusion de la bibliothËque pour les vecteurs dynamiques.
-#include <fstream> // Inclusion pour les opÈrations sur les fichiers.
+#include <SFML/Graphics.hpp> // Inclusion de la biblioth√®que SFML pour la gestion graphique.
+#include <vector> // Inclusion de la biblioth√®que pour les vecteurs dynamiques.
+#include <fstream> // Inclusion pour les op√©rations sur les fichiers.
 #include "Cell.h" // Inclusion de la classe Cell.
 
 class Grid {
@@ -12,14 +12,14 @@ private:
     float cellSize; // Taille d'une cellule en pixels.
     std::vector<std::vector<Cell>> cells; // Grille de cellules.
 
-    int countNeighbors(int x, int y) const { // MÈthode privÈe pour compter les voisins vivants d'une cellule.
+    int countNeighbors(int x, int y) const { // M√©thode priv√©e pour compter les voisins vivants d'une cellule.
         int count = 0; // Compteur de voisins vivants.
         for (int dx = -1; dx <= 1; ++dx) { // Parcours des 3 lignes autour de la cellule.
             for (int dy = -1; dy <= 1; ++dy) { // Parcours des 3 colonnes autour de la cellule.
-                if (dx == 0 && dy == 0) continue; // Ignore la cellule elle-mÍme.
-                int nx = x + dx, ny = y + dy; // CoordonnÈes du voisin.
-                if (nx >= 0 && nx < ligne && ny >= 0 && ny < colonne) { // VÈrifie si le voisin est dans la grille.
-                    count += cells[nx][ny].getAlive(); // IncrÈmente le compteur si le voisin est vivant.
+                if (dx == 0 && dy == 0) continue; // Ignore la cellule elle-m√™me.
+                int nx = x + dx, ny = y + dy; // Coordonn√©es du voisin.
+                if (nx >= 0 && nx < ligne && ny >= 0 && ny < colonne) { // V√©rifie si le voisin est dans la grille.
+                    count += cells[nx][ny].getAlive(); // Incr√©mente le compteur si le voisin est vivant.
                 }
             }
         }
@@ -32,39 +32,39 @@ public:
 
     const std::vector<std::vector<Cell>>& getCells() const { return cells; } // Retourne la grille des cellules.
 
-    void loadFromFile(const std::string& filename) { // Charge une grille ‡ partir d'un fichier.
+    void loadFromFile(const std::string& filename) { // Charge une grille √† partir d'un fichier.
         std::ifstream file(filename); // Ouvre le fichier en lecture.
-        if (file.is_open()) { // VÈrifie si le fichier est ouvert.
+        if (file.is_open()) { // V√©rifie si le fichier est ouvert.
             file >> ligne >> colonne; // Lit le nombre de lignes et colonnes.
             cells.resize(ligne, std::vector<Cell>(colonne)); // Redimensionne la grille.
             for (int x = 0; x < ligne; ++x) { // Parcours des lignes.
                 for (int y = 0; y < colonne; ++y) { // Parcours des colonnes.
                     int state;
-                    file >> state; // Lit l'Ètat de la cellule (0 ou 1).
-                    cells[x][y].setAlive(state == 1); // DÈfinit l'Ètat de la cellule.
+                    file >> state; // Lit l'√©tat de la cellule (0 ou 1).
+                    cells[x][y].setAlive(state == 1); // D√©finit l'√©tat de la cellule.
                 }
             }
             file.close(); // Ferme le fichier.
         }
         else {
-            throw std::runtime_error("Impossible d'ouvrir le fichier."); // LËve une exception en cas d'Èchec.
+            throw std::runtime_error("Impossible d'ouvrir le fichier."); // L√®ve une exception en cas d'√©chec.
         }
     }
 
     int getcolonne() const { return colonne; } // Retourne le nombre de colonnes.
     int getligne() const { return ligne; } // Retourne le nombre de lignes.
 
-    void toggleCell(int mouseX, int mouseY) { // Change l'Ètat d'une cellule en fonction des coordonnÈes de la souris.
+    void toggleCell(int mouseX, int mouseY) { // Change l'√©tat d'une cellule en fonction des coordonn√©es de la souris.
         int x = mouseY / cellSize; // Calcule l'index de la ligne.
         int y = mouseX / cellSize; // Calcule l'index de la colonne.
-        if (x >= 0 && x < ligne && y >= 0 && y < colonne) { // VÈrifie si les coordonnÈes sont valides.
-            bool currentState = cells[x][y].getAlive(); // RÈcupËre l'Ètat actuel de la cellule.
-            cells[x][y].setAlive(!currentState); // Inverse l'Ètat de la cellule.
+        if (x >= 0 && x < ligne && y >= 0 && y < colonne) { // V√©rifie si les coordonn√©es sont valides.
+            bool currentState = cells[x][y].getAlive(); // R√©cup√®re l'√©tat actuel de la cellule.
+            cells[x][y].setAlive(!currentState); // Inverse l'√©tat de la cellule.
         }
     }
 
-    void updateGrid() { // Met ‡ jour la grille en appliquant les rËgles du jeu.
-        std::vector<std::vector<Cell>> next = cells; // Copie de l'Ètat actuel des cellules.
+    void updateGrid() { // Met √† jour la grille en appliquant les r√®gles du jeu.
+        std::vector<std::vector<Cell>> next = cells; // Copie de l'√©tat actuel des cellules.
         for (int x = 0; x < ligne; ++x) { // Parcours des lignes.
             for (int y = 0; y < colonne; ++y) { // Parcours des colonnes.
                 int neighbors = countNeighbors(x, y); // Compte les voisins vivants.
@@ -76,15 +76,15 @@ public:
                 }
             }
         }
-        cells = next; // Met ‡ jour la grille avec le nouvel Ètat.
+        cells = next; // Met √† jour la grille avec le nouvel √©tat.
     }
 
-    void draw(sf::RenderWindow& window) const { // Dessine la grille dans une fenÍtre SFML.
-        sf::RectangleShape cellShape(sf::Vector2f(cellSize, cellSize)); // CrÈe une forme rectangulaire pour une cellule.
+    void draw(sf::RenderWindow& window) const { // Dessine la grille dans une fen√™tre SFML.
+        sf::RectangleShape cellShape(sf::Vector2f(cellSize, cellSize)); // Cr√©e une forme rectangulaire pour une cellule.
         for (int x = 0; x < ligne; ++x) { // Parcours des lignes.
             for (int y = 0; y < colonne; ++y) { // Parcours des colonnes.
                 cellShape.setPosition(static_cast<float>(y) * cellSize, static_cast<float>(x) * cellSize); // Positionne la cellule.
-                cellShape.setFillColor(cells[x][y].getAlive() ? sf::Color::Black : sf::Color::White); // Choisit la couleur en fonction de l'Ètat.
+                cellShape.setFillColor(cells[x][y].getAlive() ? sf::Color::Black : sf::Color::White); // Choisit la couleur en fonction de l'√©tat.
                 window.draw(cellShape); // Dessine la cellule.
             }
         }
