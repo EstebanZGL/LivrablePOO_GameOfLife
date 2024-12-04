@@ -1,4 +1,5 @@
-#ifndef CONSOLEGAME_HPP // Protection contre les inclusions multiples.
+
+
 #define CONSOLEGAME_HPP // Définition de la macro CONSOLEGAME_HPP pour éviter de multiples inclusions.
 
 #include <iostream> // Inclusion pour les entrées/sorties standard.
@@ -9,8 +10,10 @@
 #include <atomic> // Inclusion pour les variables atomiques (thread-safe).
 #include <fstream> // Inclusion pour les opérations sur les fichiers.
 
+
 class ConsoleGame { // Classe représentant le jeu en mode console.
 private:
+
     Grid grid; // Instance de la grille représentant l'état du jeu.
     int iterationCount; // Compteur d'itérations.
     int delay; // Délai entre chaque mise à jour de la grille (en millisecondes).
@@ -75,9 +78,11 @@ public:
             for (int x = 0; x < grid.getligne(); ++x) { // Parcourt chaque ligne.
                 for (int y = 0; y < grid.getcolonne(); ++y) { // Parcourt chaque colonne.
                     outputFile << (grid.getCells()[x][y].getAlive() ? "1" : "0") << " "; // Écrit l'état des cellules.
+
                 }
                 outputFile << "\n"; // Nouvelle ligne après chaque rangée.
             }
+
             outputFile << "\n"; // Ligne vide entre les itérations.
         }
     }
@@ -89,22 +94,26 @@ public:
             std::cin >> input; // Lecture de l'entrée utilisateur.
             if (input == 'q') { // Si l'utilisateur entre 'q'.
                 running = false; // Arrête le jeu.
+
             }
             // Ignore le reste de la ligne pour éviter les problèmes d'entrée.
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
     }
 
+
     // Méthode pour démarrer le jeu.
     void start() {
         // Lancement du thread pour gérer les entrées utilisateur.
         std::thread inputThread(&ConsoleGame::inputThread, this);
         while (running) { // Boucle principale du jeu tant qu'il est en cours.
+
             displayGrid(); // Affiche la grille.
             grid.updateGrid(); // Met à jour l'état de la grille.
             iterationCount++; // Incrémente le compteur d'itérations.
             std::this_thread::sleep_for(std::chrono::milliseconds(delay)); // Pause entre les mises à jour.
         }
+
         inputThread.join(); // Attend que le thread d'entrée utilisateur se termine.
     }
 };
