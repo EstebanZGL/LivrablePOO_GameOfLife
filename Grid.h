@@ -79,10 +79,26 @@ public:
                 else { // Si la cellule est morte.
                     next[x][y].setAlive(neighbors == 3); // Devient vivante si exactement 3 voisins.
                 }
+
             }
+            cells = next; // Met à jour la grille avec le nouvel état.
         }
-        cells = next; // Met à jour la grille avec le nouvel état.
     }
+
+    bool updateGrid(bool cleargrid) {
+        std::cout << "Reset de la grille" << std::endl;
+        std::vector<std::vector<Cell>> next = cells; // Copie de l'état actuel des cellules.
+            if (cleargrid == true) {
+                for (int x = 0; x < ligne; ++x) { // Parcours des lignes.
+                    for (int y = 0; y < colonne; ++y) { // Parcours des colonnes.
+                        next[x][y].setAlive(0);
+                    }
+                }
+                cells = next; // Met à jour la grille avec le nouvel état.
+            }
+            return 0;
+        }
+        
 
     void draw(sf::RenderWindow& window) const { // Dessine la grille dans une fenêtre SFML.
         sf::RectangleShape cellShape(sf::Vector2f(cellSize, cellSize)); // Crée une forme rectangulaire pour une cellule.
