@@ -64,41 +64,39 @@ public:
 
 
     void createWindowWithText(const std::string& textContent) {
-        // Créer une instance de la police
         sf::Font font;
-        if (!font.loadFromFile("Roboto-Regular.ttf")) { // Assurez-vous que le fichier de police est accessible
+        if (!font.loadFromFile("Roboto-Regular.ttf")) {
             throw std::runtime_error("Impossible de charger la police.");
         }
 
-        // Créer une instance de sf::Text
         sf::Text text;
         text.setFont(font);
         text.setString(textContent);
-        text.setCharacterSize(30); // Taille de la police
-        text.setFillColor(sf::Color::Black); // Couleur du texte
+        text.setCharacterSize(30);
+        text.setFillColor(sf::Color::Black);
 
-        // Calculer la taille nécessaire de la fenêtre
         sf::FloatRect textBounds = text.getLocalBounds();
-        float window2Width = textBounds.width + 50; // Ajouter un peu de marge
-        float window2Height = textBounds.height + 50; // Ajouter un peu de marge
+        float window2Width = textBounds.width + 50;
+        float window2Height = textBounds.height + 50;
 
         // Créer la fenêtre
-        sf::RenderWindow window2(sf::VideoMode(static_cast<unsigned int>(window2Width), static_cast<unsigned int>(window2Height)), "Fenêtre avec Texte");
+        sf::RenderWindow window2(sf::VideoMode(static_cast<unsigned int>(window2Width), static_cast<unsigned int>(window2Height)), "Menu des touches");
 
-        // Centrer le texte dans la fenêtre
-        text.setPosition(25, 25); // Positionnement avec une marge
+        // Positionner la fenêtre à une position spécifique (par exemple, x=100, y=100)
+        window2.setPosition(sf::Vector2i(100, 100)); // Changez ces valeurs selon vos besoins
 
-        // Boucle principale de la fenêtre
+        text.setPosition(25, 25);
+
         while (window2.isOpen()) {
             sf::Event event;
             while (window2.pollEvent(event)) {
                 if (event.type == sf::Event::Closed)
-                    window2.close(); // Fermer la fenêtre si l'utilisateur clique sur la croix
+                    window2.close();
             }
 
-            window2.clear(sf::Color::White); // Effacer la fenêtre avec un fond blanc
-            window2.draw(text); // Dessiner le texte
-            window2.display(); // Afficher le contenu de la fenêtre
+            window2.clear(sf::Color::White);
+            window2.draw(text);
+            window2.display();
         }
     }
 
@@ -119,21 +117,7 @@ public:
 
         file.close(); // Ferme le fichier.
     }
-    /*
-    void placeSmallerGrid(int startX, int startY, int smallWidth, int smallHeight) {
-        for (int i = 0; i < smallHeight; ++i) {
-            for (int j = 0; j < smallWidth; ++j) {
-                int x = startY + i;
-                int y = startX + j;
-
-                // Vérifiez que la position est valide avant de placer la cellule
-                if (x >= 0 && x < grid.getligne() && y >= 0 && y < grid.getcolonne()) {
-                    grid.toggleCell(y * grid.getCellSize(), x * grid.getCellSize()); // Active la cellule
-                }
-            }
-        }
-    }
-    */
+    
 
     void handleInput(sf::Event& event) {
         if (event.type == sf::Event::Closed) {
@@ -177,7 +161,12 @@ public:
                 grid.clearGrid();
             }
             else if (event.key.code == sf::Keyboard::T) {
-                std::string message = "";
+                std::string message = "Pause : P\n"
+                    "Reinitialiser : R      \n"
+                    "Objet 1 : G\n"
+                    "Objet 2 : H\n"
+                    "Fermer : C";
+
                 createWindowWithText(message); // Appeler la fonction pour créer la fenêtre avec le texte
                 
             }
