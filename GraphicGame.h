@@ -49,7 +49,7 @@ public:
 
         grid.loadFromFile(filename); // Chargement de la grille depuis un fichier.
         window.create(sf::VideoMode(grid.getcolonne() * Size, grid.getligne() * Size + 60), "Jeu de la Vie"); // Redimensionnement de la fenêtre selon la grille.
-
+        
         if (!font.loadFromFile("Roboto-Regular.ttf")) { // Chargement de la police.
             throw std::runtime_error("Impossible de charger la police 'Roboto-Regular.ttf'."); // Erreur si la police n'est pas chargée.
         }
@@ -117,15 +117,21 @@ public:
 
         file.close(); // Ferme le fichier.
     }
-    
 
     void handleInput(sf::Event& event) {
         if (event.type == sf::Event::Closed) {
             window.close();
         }
         else if (event.type == sf::Event::MouseButtonPressed && editing) {
+            int gridX = event.mouseButton.x / grid.getCellSize(); // Index de la colonne
+            int gridY = event.mouseButton.y / grid.getCellSize(); // Index de la ligne
             if (event.mouseButton.button == sf::Mouse::Left) {
                 grid.toggleCell(event.mouseButton.x, event.mouseButton.y);
+            }
+            else if (event.mouseButton.button == sf::Mouse::Middle) {
+                // Action pour la molette de la souris
+                
+                grid.toggleObstacle(gridX, gridY); // Toggle l'état obstacle
             }
             else if (event.mouseButton.button == sf::Mouse::Right) {
                 int gridX = event.mouseButton.x / grid.getCellSize(); // Index de la colonne

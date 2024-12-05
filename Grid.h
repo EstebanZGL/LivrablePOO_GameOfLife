@@ -35,43 +35,62 @@ public:
         return cellSize;
     }
 
-    Grid(int r, int c, float size) // Constructeur de la grille.
-        : ligne(r), colonne(c), cellSize(size), cells(r, std::vector<Cell>(c)) {} // Initialise les dimensions et les cellules.
+    Grid(int lig, int col, float size) // Constructeur de la grille.
+        : ligne(lig), colonne(col), cellSize(size), cells(lig, std::vector<Cell>(col)) {} // Initialise les dimensions et les cellules.
 
     const std::vector<std::vector<Cell>>& getCells() const { return cells; } // Retourne la grille des cellules.
 
 
-    void loadFromFile(const std::string& filename) { // Charge une grille à partir d'un fichier.
-        std::ifstream file(filename); 
-        if (file.is_open()) { 
-            file >> ligne >> colonne; 
-            cells.resize(ligne, std::vector<Cell>(colonne)); // Redimensionne la grille.
-            for (int x = 0; x < ligne; ++x) { 
-                for (int y = 0; y < colonne; ++y) { 
+    void loadFromFile(const std::string& filename) {
+        std::ifstream file(filename);
+        if (file.is_open()) {
+            // Lire le nombre de lignes et de colonnes
+            file >> ligne >> colonne;
+            cells.resize(ligne, std::vector<Cell>(colonne)); // Redimensionne la grille
+
+            for (int x = 0; x < ligne; ++x) {
+                for (int y = 0; y < colonne; ++y) {
                     int state;
-                    file >> state; // Lit l'état de la cellule 
-                    cells[x][y].setAlive(state == 1); // Définit l'état de la cellule.
+                    if (file >> state) { // Tente de lire l'état de la cellule
+                        cells[x][y].setAlive(state == 1); // Définit l'état de la cellule
+                    }
+                    else {
+                        cells[x][y].setAlive(false); // Si aucune valeur, la cellule est morte
+                    }
                 }
+                // Ignore les espaces restants dans la ligne
+                file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             }
-            file.close(); 
+
+            file.close();
         }
         else {
-            throw std::runtime_error("Impossible d'ouvrir le fichier."); // Lève une exception en cas d'échec.
+            throw std::runtime_error("Impossible d'ouvrir le fichier."); // Lève une exception en cas d'échec
         }
     }
 
+
     int getcolonne() const { return colonne; }
     int getligne() const { return ligne; } 
+
+    void toggleObstacle(int y, int x) {
+        if (x >= 0 && x < ligne && y >= 0 && y < colonne) {
+            cells[x][y].toggleObstacle(); // Méthode à ajouter dans la classe Cell
+        }
+    }
 
 
     void toggleCell(int sourisX, int sourisY) { // Change l'état d'une cellule en fonction des coordonnées de la souris.
         int x = sourisY / cellSize;
         int y = sourisX / cellSize;
-        if (x >= 0 && x < ligne && y >= 0 && y < colonne) { 
-            bool currentState = cells[x][y].getAlive(); // Récupère l'état actuel de la cellule.
-            cells[x][y].setAlive(!currentState); // Inverse l'état de la cellule.
+        if (x >= 0 && x < ligne && y >= 0 && y < colonne) {
+            if (cells[x][y].canBeModified()) { // Vérifie si la cellule peut être modifiée
+                bool currentState = cells[x][y].getAlive(); // Récupère l'état actuel de la cellule.
+                cells[x][y].setAlive(!currentState); // Inverse l'état de la cellule.
+            }
         }
     }
+
 
     void updateGrid() { // Met à jour la grille .
         std::vector<std::vector<Cell>> next = cells; // Copie de l'état actuel des cellules.
@@ -96,37 +115,56 @@ public:
         std::vector<std::vector<Cell>> next = cells; // Copie de l'�tat actuel des cellules.
                 for (int x = 0; x < ligne; ++x) { // Parcours des lignes.
                     for (int y = 0; y < colonne; ++y) { // Parcours des colonnes.
-                        next[x][y].setAlive(0);
+                        next[x][y].clearCell();
                     }
                 }
                 cells = next; // Met � jour la grille avec le nouvel �tat.
         }
     
 
-    void draw(sf::RenderWindow& window) const { // Dessine la grille dans une fen�tre SFML.
-        sf::RectangleShape cellShape(sf::Vector2f(cellSize, cellSize)); // Cr�e une forme rectangulaire pour une cellule.
+    void draw(sf::RenderWindow& window) const { // Dessine la grille dans une fenêtre SFML.
+        sf::RectangleShape cellShape(sf::Vector2f(cellSize, cellSize)); // Crée une forme rectangulaire pour une cellule.
         for (int x = 0; x < ligne; ++x) { // Parcours des lignes.
             for (int y = 0; y < colonne; ++y) { // Parcours des colonnes.
                 cellShape.setPosition(static_cast<float>(y) * cellSize, static_cast<float>(x) * cellSize); // Positionne la cellule.
-                cellShape.setFillColor(cells[x][y].getAlive() ? sf::Color::Black : sf::Color::White); // Choisit la couleur en fonction de l'�tat.
+
+                // Choisit la couleur en fonction de l'état.
+                if (cells[x][y].getAliveColor()) {
+                    cellShape.setFillColor(sf::Color::Black); // Couleur pour les cellules vivantes.
+                }
+                else if (cells[x][y].isObstacleAlive()) {
+                    cellShape.setFillColor(sf::Color::Green); // Couleur pour les obstacles vivants.
+                }
+                else if (cells[x][y].isObstacle()) {
+                    cellShape.setFillColor(sf::Color::Red); // Couleur pour les obstacles morts.
+                }
+                else {
+                    cellShape.setFillColor(sf::Color::White); // Couleur pour les cellules mortes.
+                }
 
                 window.draw(cellShape); // Dessine la cellule.
             }
         }
 
         // Lignes pour la grille.
-        sf::RectangleShape line(sf::Vector2f(ligne * cellSize, 1)); // Ligne.
+        sf::RectangleShape line(sf::Vector2f(colonne * cellSize, 1)); // Ligne.
         line.setFillColor(sf::Color::Black); // Couleur noire pour les lignes.
-        for (int i = 1; i < ligne; ++i) { // Dessine les lignes .
+
+        for (int i = 1; i < ligne; ++i) { // Dessine les lignes.
             line.setPosition(0, static_cast<float>(i) * cellSize); // Positionne la ligne.
             window.draw(line); // Dessine la ligne.
         }
-        line.setSize(sf::Vector2f(1, colonne * cellSize)); // colonne.
+
+        line.setSize(sf::Vector2f(1, ligne * cellSize)); // Colonne.
+
         for (int i = 1; i < colonne; ++i) { // Dessine les colonnes.
             line.setPosition(static_cast<float>(i) * cellSize, 0); // Positionne la colonne.
             window.draw(line); // Dessine la colonne.
         }
     }
+
+
 };
 
 #endif 
+
