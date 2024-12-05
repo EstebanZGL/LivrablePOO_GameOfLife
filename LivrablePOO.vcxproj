@@ -135,6 +135,8 @@
     <ClCompile Include="LivrablePOO.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="..\..\..\..\Downloads\glider.txt" />
+    <Text Include="canon_glider.txt" />
     <Text Include="input.txt" />
     <Text Include="sauvegarde.txt" />
   </ItemGroup>

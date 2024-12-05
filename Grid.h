@@ -29,10 +29,14 @@ private:
         return count; 
     }
 
-public:
-    Grid(int l, int c, float taille) 
-        : ligne(l), colonne(c), taillecellule(taille), cells(l, std::vector<Cell>(c)) {} 
 
+
+    float getCellSize() const { // M�thode pour obtenir la taille de la cellule
+        return cellSize;
+    }
+
+    Grid(int r, int c, float size) // Constructeur de la grille.
+        : ligne(r), colonne(c), cellSize(size), cells(r, std::vector<Cell>(c)) {} // Initialise les dimensions et les cellules.
 
     const std::vector<std::vector<Cell>>& getCells() const { return cells; } // Retourne la grille des cellules.
 
@@ -80,17 +84,35 @@ public:
                 else { 
                     next[x][y].setAlive(neighbors == 3); // Devient vivante si exactement 3 voisins.
                 }
+
             }
+            cells = next; // Met � jour la grille avec le nouvel �tat.
         }
-        cells = next; // Met à jour la grille avec le nouvel état.
+
     }
 
-    void draw(sf::RenderWindow& window) const { // Dessine la grille dans une fenêtre SFML.
-        sf::RectangleShape cellShape(sf::Vector2f(taillecellule, taillecellule)); // Crée une forme rectangulaire pour une cellule.
-        for (int x = 0; x < ligne; ++x) { 
-            for (int y = 0; y < colonne; ++y) { 
-                cellShape.setPosition(static_cast<float>(y) * taillecellule, static_cast<float>(x) * taillecellule); // Positionne la cellule.
-                cellShape.setFillColor(cells[x][y].getAlive() ? sf::Color::Black : sf::Color::White); // Choisit la couleur en fonction de l'état.
+    bool updateGrid(bool cleargrid) {
+        std::cout << "Reset de la grille" << std::endl;
+        std::vector<std::vector<Cell>> next = cells; // Copie de l'�tat actuel des cellules.
+            if (cleargrid == true) {
+                for (int x = 0; x < ligne; ++x) { // Parcours des lignes.
+                    for (int y = 0; y < colonne; ++y) { // Parcours des colonnes.
+                        next[x][y].setAlive(0);
+                    }
+                }
+                cells = next; // Met � jour la grille avec le nouvel �tat.
+            }
+            return 0;
+        }
+        
+
+    void draw(sf::RenderWindow& window) const { // Dessine la grille dans une fen�tre SFML.
+        sf::RectangleShape cellShape(sf::Vector2f(cellSize, cellSize)); // Cr�e une forme rectangulaire pour une cellule.
+        for (int x = 0; x < ligne; ++x) { // Parcours des lignes.
+            for (int y = 0; y < colonne; ++y) { // Parcours des colonnes.
+                cellShape.setPosition(static_cast<float>(y) * cellSize, static_cast<float>(x) * cellSize); // Positionne la cellule.
+                cellShape.setFillColor(cells[x][y].getAlive() ? sf::Color::Black : sf::Color::White); // Choisit la couleur en fonction de l'�tat.
+
                 window.draw(cellShape); // Dessine la cellule.
             }
         }

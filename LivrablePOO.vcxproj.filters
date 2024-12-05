@@ -75,5 +75,11 @@
     <Text Include="sauvegarde.txt">
       <Filter>Fichiers de ressources</Filter>
     </Text>
+    <Text Include="..\..\..\..\Downloads\glider.txt">
+      <Filter>Fichiers de ressources</Filter>
+    </Text>
+    <Text Include="canon_glider.txt">
+      <Filter>Fichiers de ressources</Filter>
+    </Text>
   </ItemGroup>
 </Project>
