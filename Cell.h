@@ -1,15 +1,62 @@
-#ifndef CELL_HPP // Protection contre les inclusions multiples.
-#define CELL_HPP // Définition de la macro CELL_HPP pour éviter les inclusions multiples.
+#ifndef CELL_HPP
+#define CELL_HPP
+
+enum class CellState {
+    DEAD,
+    ALIVE,
+    OBSTACLE_ALIVE,
+    OBSTACLE_DEAD
+};
 
 class Cell {
 private:
-    bool alive; // Attribut pour stocker l'état de la cellule (true = vivante, false = morte).
+    CellState state;
 
 public:
-    Cell() : alive(false) {} // Constructeur par défaut, initialise alive à false (cellule morte).
+    Cell() : state(CellState::DEAD) {}
 
-    bool getAlive() const { return alive; } // Retourne l'état de la cellule (vivante ou morte).
-    void setAlive(bool state) { alive = state; } // Modifie l'état de la cellule avec le paramètre donné.
+    void setAlive(bool alive) {
+        if (state == CellState::OBSTACLE_DEAD || state == CellState::OBSTACLE_ALIVE) {
+            return;
+        }
+        state = alive ? CellState::ALIVE : CellState::DEAD;
+    }
+
+    void clearCell() {
+        state = CellState::DEAD;
+    }
+
+    bool getAlive() const {
+        return state == CellState::ALIVE || state == CellState::OBSTACLE_ALIVE;
+    }
+
+    bool getAliveColor() const {
+        return state == CellState::ALIVE ;
+    }
+
+    void toggleObstacle() {
+        if (state == CellState::OBSTACLE_ALIVE) {
+            state = CellState::DEAD; // Si c'est un obstacle vivant, on le rend mort
+        }
+        else if (state == CellState::OBSTACLE_DEAD) {
+            state = CellState::OBSTACLE_ALIVE; // Si c'est un obstacle mort, on le rend vivant
+        }
+        else if (state == CellState::DEAD) {
+            state = CellState::OBSTACLE_DEAD;
+        }
+    }
+
+    bool isObstacle() const {
+        return state == CellState::OBSTACLE_ALIVE || state == CellState::OBSTACLE_DEAD;
+    }
+
+    bool isObstacleAlive() const {
+        return state == CellState::OBSTACLE_ALIVE;
+    }
+
+    bool canBeModified() const { // Méthode pour vérifier si la cellule peut être modifiée
+        return state == CellState::DEAD || state == CellState::ALIVE;  // Seules les cellules mortes peuvent être modifiées
+    }
 };
 
-#endif // Fin de la protection contre les inclusions multiples.
+#endif
