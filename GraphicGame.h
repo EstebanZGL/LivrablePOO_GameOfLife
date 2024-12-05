@@ -47,7 +47,7 @@ public:
 
         grid.loadFromFile(filename); // Chargement de la grille depuis un fichier.
         window.create(sf::VideoMode(grid.getcolonne() * Size, grid.getligne() * Size + 60), "Jeu de la Vie"); // Redimensionnement de la fenêtre selon la grille.
-
+        
         if (!font.loadFromFile("Roboto-Regular.ttf")) { // Chargement de la police.
             throw std::runtime_error("Impossible de charger la police 'Roboto-Regular.ttf'."); // Erreur si la police n'est pas chargée.
         }
@@ -74,22 +74,7 @@ public:
 
         file.close(); // Ferme le fichier.
     }
-    /*
-    void placeSmallerGrid(int startX, int startY, int smallWidth, int smallHeight) {
-        for (int i = 0; i < smallHeight; ++i) {
-            for (int j = 0; j < smallWidth; ++j) {
-                int x = startY + i;
-                int y = startX + j;
-
-                // Vérifiez que la position est valide avant de placer la cellule
-                if (x >= 0 && x < grid.getligne() && y >= 0 && y < grid.getcolonne()) {
-                    grid.toggleCell(y * grid.getCellSize(), x * grid.getCellSize()); // Active la cellule
-                }
-            }
-        }
-    }
-    */
-
+  
     void handleInput(sf::Event& event) {
         if (event.type == sf::Event::Closed) {
             window.close();
