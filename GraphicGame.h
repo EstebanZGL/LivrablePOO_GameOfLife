@@ -129,7 +129,7 @@ public:
                 window.close();
             }
             else if (event.key.code == sf::Keyboard::R && editing) {
-                grid.updateGrid(1);
+                grid.clearGrid();
             }
         }
     }

@@ -9,7 +9,7 @@
 class Grid {
 private:
     int ligne, colonne; // Nombre de lignes et de colonnes de la grille.
-    float taillecellule; // Taille d'une cellule en pixels.
+    float cellSize; // Taille d'une cellule en pixels.
     std::vector<std::vector<Cell>> cells; // Grille de cellules.
 
     int countNeighbors(int x, int y) const { // compter les voisins vivants d'une cellule.
@@ -29,7 +29,7 @@ private:
         return count; 
     }
 
-
+public:
 
     float getCellSize() const { // M�thode pour obtenir la taille de la cellule
         return cellSize;
@@ -65,8 +65,8 @@ private:
 
 
     void toggleCell(int sourisX, int sourisY) { // Change l'état d'une cellule en fonction des coordonnées de la souris.
-        int x = sourisY / taillecellule;
-        int y = sourisX / taillecellule;
+        int x = sourisY / cellSize;
+        int y = sourisX / cellSize;
         if (x >= 0 && x < ligne && y >= 0 && y < colonne) { 
             bool currentState = cells[x][y].getAlive(); // Récupère l'état actuel de la cellule.
             cells[x][y].setAlive(!currentState); // Inverse l'état de la cellule.
@@ -86,25 +86,22 @@ private:
                 }
 
             }
-            cells = next; // Met � jour la grille avec le nouvel �tat.
+       
         }
-
+       cells = next; // Met � jour la grille avec le nouvel �tat.
     }
-
-    bool updateGrid(bool cleargrid) {
+    
+    void clearGrid() {
         std::cout << "Reset de la grille" << std::endl;
         std::vector<std::vector<Cell>> next = cells; // Copie de l'�tat actuel des cellules.
-            if (cleargrid == true) {
                 for (int x = 0; x < ligne; ++x) { // Parcours des lignes.
                     for (int y = 0; y < colonne; ++y) { // Parcours des colonnes.
                         next[x][y].setAlive(0);
                     }
                 }
                 cells = next; // Met � jour la grille avec le nouvel �tat.
-            }
-            return 0;
         }
-        
+    
 
     void draw(sf::RenderWindow& window) const { // Dessine la grille dans une fen�tre SFML.
         sf::RectangleShape cellShape(sf::Vector2f(cellSize, cellSize)); // Cr�e une forme rectangulaire pour une cellule.
@@ -118,15 +115,15 @@ private:
         }
 
         // Lignes pour la grille.
-        sf::RectangleShape line(sf::Vector2f(ligne * taillecellule, 1)); // Ligne.
+        sf::RectangleShape line(sf::Vector2f(ligne * cellSize, 1)); // Ligne.
         line.setFillColor(sf::Color::Black); // Couleur noire pour les lignes.
         for (int i = 1; i < ligne; ++i) { // Dessine les lignes .
-            line.setPosition(0, static_cast<float>(i) * taillecellule); // Positionne la ligne.
+            line.setPosition(0, static_cast<float>(i) * cellSize); // Positionne la ligne.
             window.draw(line); // Dessine la ligne.
         }
-        line.setSize(sf::Vector2f(1, colonne * taillecellule)); // colonne.
+        line.setSize(sf::Vector2f(1, colonne * cellSize)); // colonne.
         for (int i = 1; i < colonne; ++i) { // Dessine les colonnes.
-            line.setPosition(static_cast<float>(i) * taillecellule, 0); // Positionne la colonne.
+            line.setPosition(static_cast<float>(i) * cellSize, 0); // Positionne la colonne.
             window.draw(line); // Dessine la colonne.
         }
     }
