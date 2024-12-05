@@ -23,12 +23,13 @@ private:
     int iterationCount; // Compteur du nombre d'itérations.
     int delay; // Délai entre les mises à jour de la grille (en millisecondes).
     StructureData structureData; // Variable pour stocker les données de la structure.
-
+    bool middleClickProcessed; // Indique si le clic central a été traité
 public:
     GraphicGame(int ligne, int colonne, float Size, int delayMs) // Constructeur avec paramètres pour la grille.
         : grid(ligne, colonne, Size), // Initialisation de la grille.
         window(sf::VideoMode(colonne* Size, ligne* Size + 60), "Jeu de la Vie"), // Initialisation de la fenêtre.
-        running(false), editing(true), iterationCount(0), delay(delayMs) { // Initialisation des variables.
+        running(false), editing(true), iterationCount(0), delay(delayMs), // Initialisation des variables.
+        middleClickProcessed(false) { // Initialisation de middleClickProcessed
 
         if (!font.loadFromFile("Roboto-Regular.ttf")) { // Chargement de la police.
             throw std::runtime_error("Impossible de charger la police 'Roboto-Regular.ttf'."); // Erreur si la police n'est pas chargée.
@@ -89,14 +90,30 @@ public:
         }
     }
     */
+    void placeObstacle(int mouseX, int mouseY, bool aliveState, sf::Color color) {
+        int gridX = mouseY / grid.getCellSize();
+        int gridY = mouseX / grid.getCellSize();
+        grid.addObstacle(gridX, gridY, aliveState, color);
+    }
+
 
     void handleInput(sf::Event& event) {
         if (event.type == sf::Event::Closed) {
             window.close();
         }
+        else if (event.mouseButton.button == sf::Mouse::Middle && editing) {
+              std::cout << "Clic central détecté aux coordonnées (" 
+              << event.mouseButton.x << ", " 
+              << event.mouseButton.y << ")" << std::endl;
+    placeObstacle(event.mouseButton.x, event.mouseButton.y, true, sf::Color::Green); // Exemple : obstacle vivant (vert).
+}
         else if (event.type == sf::Event::MouseButtonPressed && editing) {
             if (event.mouseButton.button == sf::Mouse::Left) {
                 grid.toggleCell(event.mouseButton.x, event.mouseButton.y);
+
+            }
+            else if (event.mouseButton.button == sf::Mouse::Middle && editing) {
+                placeObstacle(event.mouseButton.x, event.mouseButton.y, true, sf::Color::Green); // Exemple : obstacle vivant (vert).
             }
             else if (event.mouseButton.button == sf::Mouse::Right) {
                 int gridX = event.mouseButton.x / grid.getCellSize(); // Index de la colonne
@@ -112,6 +129,7 @@ public:
                 }
             }
         }
+
         else if (event.type == sf::Event::KeyPressed) {
             if (event.key.code == sf::Keyboard::P) {
                 running = !running;

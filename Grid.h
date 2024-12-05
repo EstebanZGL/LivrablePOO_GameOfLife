@@ -11,6 +11,7 @@ private:
     int ligne, colonne; // Nombre de lignes et de colonnes de la grille.
     float cellSize; // Taille d'une cellule en pixels.
     std::vector<std::vector<Cell>> cells; // Grille de cellules.
+    std::vector<std::pair<int, int>> obstaclePositions; // Liste des positions des obstacles.
 
     int countNeighbors(int x, int y) const { // compter les voisins vivants d'une cellule.
         int count = 0; 
@@ -39,6 +40,17 @@ public:
         : ligne(r), colonne(c), cellSize(size), cells(r, std::vector<Cell>(c)) {} // Initialise les dimensions et les cellules.
 
     const std::vector<std::vector<Cell>>& getCells() const { return cells; } // Retourne la grille des cellules.
+
+
+    ////////////////////////////////////
+    void addObstacle(int x, int y, bool aliveState, sf::Color color) {
+        if (x >= 0 && x < ligne && y >= 0 && y < colonne) {
+            cells[x][y] = ObstacleCell(aliveState, color); // Place un obstacle dans la grille.
+            obstaclePositions.emplace_back(x, y);
+        }
+    }
+    ////////////////////////////////////////
+
 
 
     void loadFromFile(const std::string& filename) { // Charge une grille à partir d'un fichier.
@@ -77,6 +89,9 @@ public:
         std::vector<std::vector<Cell>> next = cells; // Copie de l'état actuel des cellules.
         for (int x = 0; x < ligne; ++x) { 
             for (int y = 0; y < colonne; ++y) { 
+                if (std::find(obstaclePositions.begin(), obstaclePositions.end(), std::make_pair(x, y)) != obstaclePositions.end()) {
+                    continue; // Ignore les obstacles.
+                }
                 int neighbors = countNeighbors(x, y); // Compte les voisins vivants.
                 if (cells[x][y].getAlive()) { // Si la cellule est vivante.
                     next[x][y].setAlive(neighbors == 2 || neighbors == 3); // Survit si 2 ou 3 voisins, sinon meurt.
