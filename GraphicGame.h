@@ -3,7 +3,13 @@
 
 #include <SFML/Graphics.hpp> // Inclusion de la bibliothèque SFML pour les graphiques.
 #include <iostream> // Inclusion de la bibliothèque pour les entrées/sorties standard.
+#include <fstream> // Inclusion pour la gestion des fichiers.
+#include <vector> // Inclusion pour utiliser les vecteurs.
 #include "Grid.h" // Inclusion de la classe Grid (grille).
+
+struct StructureData { // Structure pour représenter les données à charger.
+    std::vector<std::pair<int, int>> cells; // Liste de cellules à activer.
+};
 
 class GraphicGame {
 private:
@@ -16,6 +22,7 @@ private:
     bool editing; // Mode édition pour permettre de modifier les cellules avec la souris.
     int iterationCount; // Compteur du nombre d'itérations.
     int delay; // Délai entre les mises à jour de la grille (en millisecondes).
+    StructureData structureData; // Variable pour stocker les données de la structure.
 
 public:
     GraphicGame(int ligne, int colonne, float cellSize, int delayMs) // Constructeur avec paramètres pour la grille.
@@ -51,22 +58,82 @@ public:
         iterationText.setPosition(10, grid.getligne() * cellSize + 10); // Position du texte sous la grille.
     }
 
-    void handleInput(sf::Event& event) { // Méthode pour gérer les entrées utilisateur.
-        if (event.type == sf::Event::Closed) { // Si l'utilisateur ferme la fenêtre.
-            window.close(); // Ferme la fenêtre.
+    void loadStructureFromFile(const std::string& filename) {
+        std::ifstream file(filename);
+        if (!file) {
+            std::cerr << "Erreur lors de l'ouverture du fichier : " << filename << std::endl;
+            return;
         }
-        else if (event.type == sf::Event::MouseButtonPressed && editing) { // Si un clic est détecté en mode édition.
-            if (event.mouseButton.button == sf::Mouse::Left) { // Si c'est un clic gauche.
-                grid.toggleCell(event.mouseButton.x, event.mouseButton.y); // Modifie l'état de la cellule cliquée.
-            }
+
+        structureData.cells.clear(); // Réinitialise les cellules.
+        int x, y;
+        while (file >> x >> y) { // Supposons que le fichier contient des paires de coordonnées.
+            structureData.cells.emplace_back(x, y); // Ajoute chaque paire à la structure.
+            std::cout << "Cellule chargée : (" << x << ", " << y << ")" << std::endl; // Debug
         }
-        else if (event.type == sf::Event::KeyPressed) { // Si une touche est pressée.
-            if (event.key.code == sf::Keyboard::P) { // Si la touche 'P' est pressée.
-                running = !running; // Alterne entre démarrer/arrêter la simulation.
-                editing = !running; // Le mode édition est actif si la simulation est arrêtée.
+
+        file.close(); // Ferme le fichier.
+    }
+    /*
+    void placeSmallerGrid(int startX, int startY, int smallWidth, int smallHeight) {
+        for (int i = 0; i < smallHeight; ++i) {
+            for (int j = 0; j < smallWidth; ++j) {
+                int x = startY + i;
+                int y = startX + j;
+
+                // Vérifiez que la position est valide avant de placer la cellule
+                if (x >= 0 && x < grid.getligne() && y >= 0 && y < grid.getcolonne()) {
+                    grid.toggleCell(y * grid.getCellSize(), x * grid.getCellSize()); // Active la cellule
+                }
             }
         }
     }
+    */
+
+    void handleInput(sf::Event& event) {
+        if (event.type == sf::Event::Closed) {
+            window.close();
+        }
+        else if (event.type == sf::Event::MouseButtonPressed && editing) {
+            if (event.mouseButton.button == sf::Mouse::Left) {
+                grid.toggleCell(event.mouseButton.x, event.mouseButton.y);
+            }
+            else if (event.mouseButton.button == sf::Mouse::Right) {
+                int gridX = event.mouseButton.x / grid.getCellSize(); // Index de la colonne
+                int gridY = event.mouseButton.y / grid.getCellSize(); // Index de la ligne
+
+                // Placer la structure chargée depuis le fichier
+                for (const auto& cell : structureData.cells) {
+                    int x = gridY + cell.second;
+                    int y = gridX + cell.first;
+                    if (x >= 0 && x < grid.getligne() && y >= 0 && y < grid.getcolonne()) {
+                        grid.toggleCell(y * grid.getCellSize(), x * grid.getCellSize());
+                    }
+                }
+            }
+        }
+        else if (event.type == sf::Event::KeyPressed) {
+            if (event.key.code == sf::Keyboard::P) {
+                running = !running;
+                editing = !running;
+            }
+            else if (event.key.code == sf::Keyboard::G && !running) {
+                loadStructureFromFile("glider.txt");
+                std::cout << "Structure chargée. Cliquez avec le bouton droit pour l'appliquer." << std::endl;
+            }
+            else if (event.key.code == sf::Keyboard::H && !running) {
+                loadStructureFromFile("canon_glider.txt");
+                std::cout << "Structure chargée. Cliquez avec le bouton droit pour l'appliquer." << std::endl;
+            }
+            else if (event.key.code == sf::Keyboard::C && editing) {
+                window.close();
+            }
+            else if (event.key.code == sf::Keyboard::R && editing) {
+                window.clear(sf::Color::White);
+            }
+        }
+    }
+
 
     void start() { // Méthode principale pour démarrer le jeu.
         while (window.isOpen()) { // Boucle principale tant que la fenêtre est ouverte.

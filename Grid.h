@@ -27,6 +27,11 @@ private:
     }
 
 public:
+
+    float getCellSize() const { // Méthode pour obtenir la taille de la cellule
+        return cellSize;
+    }
+
     Grid(int r, int c, float size) // Constructeur de la grille.
         : ligne(r), colonne(c), cellSize(size), cells(r, std::vector<Cell>(c)) {} // Initialise les dimensions et les cellules.
 
