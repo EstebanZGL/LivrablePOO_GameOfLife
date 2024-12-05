@@ -2,17 +2,13 @@
 
 Voici les différentes fonctionnalités :
 
--mode graphique ou console
+-Mode graphique ou console
 
--possibilité d'un fichier d'entrée ou d'un choix manuel des celllules
+-Possibilité d'un fichier d'entrée ou d'un choix manuel des celllules
 
--choix du temps entre les itérations	
+-Choix du temps entre les itérations	
 
-***(-Les cellules placées aux extrémités de la grille sont adjacentes )***
-
-***(-Présence d'obstacles sur la grille)***
-
-***(-Constructions préprogrammées avec la touche "b")***
+-Les cellules placées aux extrémités de la grille sont adjacentes 
 
 -Parallélisement des cellules
 
@@ -22,7 +18,17 @@ Voici les différentes fonctionnalités :
 
 -Appuyer sur "p" pour mettre en pause le jeu
 
--cliquer sur les cases pour les rendre "vivantes"
+-Appuyer sur "c" pour fermer la page
+
+-Cliquer sur les cases pour les rendre "vivantes"
+
+-Cliquer sur la molette pour créer des obstacles
+
+-Présence d'obstacles sur la grille
+
+-Constructions préprogrammées avec la touche :
+        -"g" pour glider
+        -"h" pour canon à glider
 
 
 
