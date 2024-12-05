@@ -17,6 +17,8 @@ private:
     sf::RenderWindow window; // Fenêtre de rendu graphique SFML.
     sf::Font font; // Police utilisée pour afficher du texte.
     sf::Text iterationText; // Texte affichant le nombre d'itérations.
+    sf::Text touche;
+    sf::Text touche2;
 
     bool running; // Indique si la simulation est en cours.
     bool editing; // Mode édition pour permettre de modifier les cellules avec la souris.
@@ -56,7 +58,48 @@ public:
         iterationText.setCharacterSize(20); // Taille du texte.
         iterationText.setFillColor(sf::Color::Black); // Couleur du texte.
         iterationText.setPosition(10, grid.getligne() * Size + 10); // Position du texte sous la grille.
+
+    
     }
+
+
+    void createWindowWithText(const std::string& textContent) {
+        sf::Font font;
+        if (!font.loadFromFile("Roboto-Regular.ttf")) {
+            throw std::runtime_error("Impossible de charger la police.");
+        }
+
+        sf::Text text;
+        text.setFont(font);
+        text.setString(textContent);
+        text.setCharacterSize(30);
+        text.setFillColor(sf::Color::Black);
+
+        sf::FloatRect textBounds = text.getLocalBounds();
+        float window2Width = textBounds.width + 50;
+        float window2Height = textBounds.height + 50;
+
+        // Créer la fenêtre
+        sf::RenderWindow window2(sf::VideoMode(static_cast<unsigned int>(window2Width), static_cast<unsigned int>(window2Height)), "Menu des touches");
+
+        // Positionner la fenêtre à une position spécifique (par exemple, x=100, y=100)
+        window2.setPosition(sf::Vector2i(100, 100)); // Changez ces valeurs selon vos besoins
+
+        text.setPosition(25, 25);
+
+        while (window2.isOpen()) {
+            sf::Event event;
+            while (window2.pollEvent(event)) {
+                if (event.type == sf::Event::Closed)
+                    window2.close();
+            }
+
+            window2.clear(sf::Color::White);
+            window2.draw(text);
+            window2.display();
+        }
+    }
+
 
     void loadStructureFromFile(const std::string& filename) {
         std::ifstream file(filename);
@@ -74,7 +117,7 @@ public:
 
         file.close(); // Ferme le fichier.
     }
-  
+
     void handleInput(sf::Event& event) {
         if (event.type == sf::Event::Closed) {
             window.close();
@@ -123,6 +166,16 @@ public:
             else if (event.key.code == sf::Keyboard::R && editing) {
                 grid.clearGrid();
             }
+            else if (event.key.code == sf::Keyboard::T) {
+                std::string message = "Pause : P\n"
+                    "Reinitialiser : R      \n"
+                    "Objet 1 : G\n"
+                    "Objet 2 : H\n"
+                    "Fermer : C";
+
+                createWindowWithText(message); // Appeler la fonction pour créer la fenêtre avec le texte
+                
+            }
         }
     }
 
@@ -140,11 +193,15 @@ public:
                 sf::sleep(sf::milliseconds(delay)); // Pause pour respecter le délai configuré.
             }
 
+            // Mise à jour du texte des instructions
+            touche.setString("Pause : P    Reinitialiser : R, Objet 1 : G   Objet 2 : H    Fermer : C");
+
             iterationText.setString("Iterations: " + std::to_string(iterationCount)); // Mise à jour du texte d'itérations.
 
             window.clear(sf::Color::White); // Efface la fenêtre avec un fond blanc.
             grid.draw(window); // Dessine la grille.
             window.draw(iterationText); // Dessine le texte des itérations.
+            window.draw(touche); // Dessine le texte des instructions.
             window.display(); // Affiche le contenu de la fenêtre.
         }
     }
