@@ -25,9 +25,9 @@ private:
     StructureData structureData; // Variable pour stocker les données de la structure.
 
 public:
-    GraphicGame(int ligne, int colonne, float cellSize, int delayMs) // Constructeur avec paramètres pour la grille.
-        : grid(ligne, colonne, cellSize), // Initialisation de la grille.
-        window(sf::VideoMode(colonne* cellSize, ligne* cellSize + 60), "Jeu de la Vie"), // Initialisation de la fenêtre.
+    GraphicGame(int ligne, int colonne, float Size, int delayMs) // Constructeur avec paramètres pour la grille.
+        : grid(ligne, colonne, Size), // Initialisation de la grille.
+        window(sf::VideoMode(colonne* Size, ligne* Size + 60), "Jeu de la Vie"), // Initialisation de la fenêtre.
         running(false), editing(true), iterationCount(0), delay(delayMs) { // Initialisation des variables.
 
         if (!font.loadFromFile("Roboto-Regular.ttf")) { // Chargement de la police.
@@ -37,16 +37,16 @@ public:
         iterationText.setFont(font); // Configuration de la police pour le texte.
         iterationText.setCharacterSize(20); // Taille du texte.
         iterationText.setFillColor(sf::Color::Black); // Couleur du texte.
-        iterationText.setPosition(10, ligne * cellSize + 10); // Position du texte sous la grille.
+        iterationText.setPosition(10, ligne * Size + 10); // Position du texte sous la grille.
     }
 
-    GraphicGame(const std::string& filename, float cellSize, int delayMS) // Constructeur pour charger une grille depuis un fichier.
-        : grid(0, 0, cellSize), // Initialisation par défaut de la grille.
+    GraphicGame(const std::string& filename, float Size, int delayMS) // Constructeur pour charger une grille depuis un fichier.
+        : grid(0, 0, Size), // Initialisation par défaut de la grille.
         window(sf::VideoMode(800, 600), "Jeu de la Vie"), // Fenêtre avec taille par défaut.
         running(false), editing(false), iterationCount(0), delay(delayMS) { // Initialisation des variables.
 
         grid.loadFromFile(filename); // Chargement de la grille depuis un fichier.
-        window.create(sf::VideoMode(grid.getcolonne() * cellSize, grid.getligne() * cellSize + 60), "Jeu de la Vie"); // Redimensionnement de la fenêtre selon la grille.
+        window.create(sf::VideoMode(grid.getcolonne() * Size, grid.getligne() * Size + 60), "Jeu de la Vie"); // Redimensionnement de la fenêtre selon la grille.
 
         if (!font.loadFromFile("Roboto-Regular.ttf")) { // Chargement de la police.
             throw std::runtime_error("Impossible de charger la police 'Roboto-Regular.ttf'."); // Erreur si la police n'est pas chargée.
@@ -55,7 +55,7 @@ public:
         iterationText.setFont(font); // Configuration de la police pour le texte.
         iterationText.setCharacterSize(20); // Taille du texte.
         iterationText.setFillColor(sf::Color::Black); // Couleur du texte.
-        iterationText.setPosition(10, grid.getligne() * cellSize + 10); // Position du texte sous la grille.
+        iterationText.setPosition(10, grid.getligne() * Size + 10); // Position du texte sous la grille.
     }
 
     void loadStructureFromFile(const std::string& filename) {
