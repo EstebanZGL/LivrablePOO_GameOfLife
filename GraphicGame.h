@@ -176,6 +176,7 @@ public:
                     "Reinitialiser : R      \n"
                     "Objet 1 : G\n"
                     "Objet 2 : H\n"
+                    "Grille Torique : J\n"
                     "Fermer : C";
 
                 createWindowWithText(message); // Appeler la fonction pour créer la fenêtre avec le texte
