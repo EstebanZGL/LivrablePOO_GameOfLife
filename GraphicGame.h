@@ -171,6 +171,10 @@ public:
             else if (event.key.code == sf::Keyboard::R && editing) {
                 grid.clearGrid();
             }
+            else if (event.key.code == sf::Keyboard::J) {
+                grid.setTorique(!grid.isTorique());
+                updateToriqueText();
+            }
             else if (event.key.code == sf::Keyboard::T) {
                 std::string message = "Pause : P\n"
                     "Reinitialiser : R      \n"
