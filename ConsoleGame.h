@@ -17,6 +17,7 @@ private:
     int delay; // Délai entre chaque mise à jour de la grille (en millisecondes).
     std::atomic<bool> running; // Variable atomique pour contrôler l'exécution du jeu (thread-safe).
     std::ofstream outputFile; // Flux de fichier pour sauvegarder les états du jeu.
+    bool pausing=0;
 
 public:
     // Constructeur pour initialiser le jeu avec une grille vide.
@@ -48,25 +49,33 @@ public:
 
     // Méthode pour afficher la grille dans la console.
     void displayGrid() {
-        printf("\033c"); // Efface la console.
-        for (int x = 0; x < grid.getligne(); ++x) { 
-            for (int y = 0; y < grid.getcolonne(); ++y) { 
-                if (grid.getCells()[x][y].getAlive()) { // Si la cellule est vivante.
-                    std::cout << "\033[31m1\033[0m "; // Affiche "1" en rouge 033=1 en ESC.
+        if (!pausing) {
+            printf("\033c"); // Efface la console.
+            for (int x = 0; x < grid.getligne(); ++x) {
+                for (int y = 0; y < grid.getcolonne(); ++y) {
+                    if (grid.getCells()[x][y].getAlive()) { // Si la cellule est vivante.
+                        std::cout << "\033[33m1\033[0m "; // Affiche "1" en jaune 033=1 en ESC.
+                    }
+                    else {
+                        std::cout << "0 ";
+                    }
+                    if (grid.getCells()[x][y].isObstacleAlive()) {
+                        std::cout << "\033[32mX\033[0m "; //Affiche "X" en vert pour l'obstacle vivant
+                    }
+                    else if (grid.getCells()[x][y].isObstacle() && !grid.getCells()[x][y].isObstacleAlive()) {
+                        std::cout << "\033[31mX\033[0m "; //Affiche "X" en vert pour l'obstacle vivant
+                    }
                 }
-                else {
-                    std::cout << "0 "; 
-                }
+                std::cout << std::endl;
             }
-            std::cout << std::endl; 
+
+
+            std::cout << "Iterations: " << iterationCount << std::endl;
+            std::cout << "Entrez sur 'q' pour quitter." << std::endl;
+
+            // Sauvegarde l'état actuel de la grille dans le fichier.
+            saveCurrentState();
         }
-
-        
-        std::cout << "Iterations: " << iterationCount << std::endl;
-        std::cout << "Entrez sur 'q' pour quitter." << std::endl;
-
-        // Sauvegarde l'état actuel de la grille dans le fichier.
-        saveCurrentState();
     }
 
     // Méthode pour sauvegarder l'état actuel de la grille dans un fichier.
@@ -93,6 +102,9 @@ public:
             if (input == 'q') { 
                 running = false; 
 
+            }
+            else if (input == 'p') {
+                pausing = !pausing;
             }
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');// Ignore le reste de la ligne pour éviter les problèmes d'entrée.
         }

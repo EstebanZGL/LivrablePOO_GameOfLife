@@ -90,9 +90,14 @@ public:
         while (window2.isOpen()) {
             sf::Event event;
             while (window2.pollEvent(event)) {
-                if (event.type == sf::Event::Closed)
+                if (event.type == sf::Event::Closed) {
                     window2.close();
+                }
+                else if (event.type == sf::Event::MouseButtonPressed) {
+                    window2.close();
+                }
             }
+        
 
             window2.clear(sf::Color::White);
             window2.draw(text);
