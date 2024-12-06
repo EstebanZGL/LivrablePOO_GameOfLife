@@ -7,15 +7,9 @@ int main() { // Point d'entr�e principal du programme.
     int ligne, colonne, delay; // Variables pour les dimensions de la grille et le d�lai entre les it�rations.
     float cellSize = 20.0; // Taille des cellules pour le mode graphique.
     char choix; // Variable pour stocker le choix de l'utilisateur.
-    bool torique = true;       // Mode torique par défaut.
 
     // Affiche un message de bienvenue.
     std::cout << "Bienvenue dans le Jeu de la Vie !\n";
-
-    // Choix du mode torique.
-    std::cout << "Voulez-vous activer le mode torique ? (O/N) : ";
-    std::cin >> choix;
-    torique = (choix == 'O' || choix == 'o');
 
     // Demande � l'utilisateur s'il veut charger un fichier ou �diter manuellement.
     std::cout << "Voulez-vous Lire(L) un fichier ou Editer(E) manuellement ? (L/E) : ";
@@ -36,10 +30,9 @@ int main() { // Point d'entr�e principal du programme.
             std::cin >> delay; // Lecture du d�lai entre les it�rations.
 
             try {
-                // Démarrage du mode graphique.
-                GraphicGame graphicGame(filename, cellSize, delay, torique);
-                graphicGame.start();
-
+                // Cr�ation et d�marrage du jeu en mode graphique.
+                GraphicGame graphicGame(filename, cellSize, delay);
+                graphicGame.start(); // Lancement du jeu.
             }
             catch (const std::exception& e) { // Gestion des erreurs �ventuelles.
                 std::cerr << "Erreur : " << e.what() << std::endl; // Affiche l'erreur.
@@ -52,9 +45,9 @@ int main() { // Point d'entr�e principal du programme.
             std::cin >> delay; // Lecture du d�lai entre les it�rations.
 
             try {
-                // Démarrage du mode console.
-                ConsoleGame consoleGame(filename, delay, torique);
-                consoleGame.start();
+                // Cr�ation et d�marrage du jeu en mode console.
+                ConsoleGame consoleGame(filename, delay);
+                consoleGame.start(); // Lancement du jeu.
             }
             catch (const std::exception& e) { // Gestion des erreurs �ventuelles.
                 std::cerr << "Erreur : " << e.what() << std::endl; // Affiche l'erreur.
@@ -74,8 +67,8 @@ int main() { // Point d'entr�e principal du programme.
 
         try {
             // Cr�ation et d�marrage du jeu en mode graphique avec une grille vide.
-            GraphicGame graphicGame(ligne, colonne, cellSize, delay, torique);
-            graphicGame.start();
+            GraphicGame graphicGame(ligne, colonne, cellSize, delay);
+            graphicGame.start(); // Lancement du jeu.
         }
         catch (const std::exception& e) { // Gestion des erreurs �ventuelles.
             std::cerr << "Erreur : " << e.what() << std::endl; // Affiche l'erreur.
