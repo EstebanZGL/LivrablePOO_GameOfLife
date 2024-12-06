@@ -133,7 +133,7 @@ public:
             }
        
         }
-       cells = next; // Met � jour la grille avec le nouvel �tat.
+       cells = next; // Met à jour la grille avec le nouvel �tat.
     }
     
     void clearGrid() {
@@ -144,7 +144,7 @@ public:
                         next[x][y].clearCell();
                     }
                 }
-                cells = next; // Met � jour la grille avec le nouvel �tat.
+                cells = next; // Met à jour la grille avec le nouvel �tat.
         }
     
 
