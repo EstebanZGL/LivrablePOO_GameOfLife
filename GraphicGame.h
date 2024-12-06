@@ -1,155 +1,93 @@
-#ifndef GAME_HPP // Protection contre les inclusions multiples.
-#define GAME_HPP // Définition de la macro GAME_HPP pour éviter les inclusions multiples.
+#ifndef GAME_HPP
+#define GAME_HPP
 
-#include <SFML/Graphics.hpp> // Inclusion de la bibliothèque SFML pour les graphiques.
-#include <iostream> // Inclusion de la bibliothèque pour les entrées/sorties standard.
-#include <fstream> // Inclusion pour la gestion des fichiers.
-#include <vector> // Inclusion pour utiliser les vecteurs.
-#include "Grid.h" // Inclusion de la classe Grid (grille).
+#include <SFML/Graphics.hpp>
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include "Grid.h"
 
-struct StructureData { // Structure pour représenter les données à charger.
+struct StructureData {
     std::vector<std::pair<int, int>> cells; // Liste de cellules à activer.
 };
 
 class GraphicGame {
 private:
-    Grid grid; // Instance de la grille pour le jeu.
-    sf::RenderWindow window; // Fenêtre de rendu graphique SFML.
-    sf::Font font; // Police utilisée pour afficher du texte.
-    sf::Text iterationText; // Texte affichant le nombre d'itérations.
-    sf::Text touche;
-    sf::Text touche2;
+    Grid grid;                        // Instance de la grille.
+    sf::RenderWindow window;          // Fenêtre SFML.
+    sf::Font font;                    // Police pour le texte.
+    sf::Text iterationText;           // Texte pour afficher le nombre d'itérations.
+    sf::Text toriqueText;             // Texte pour afficher le mode torique.
+    StructureData structureData;      // Données pour les structures chargées depuis un fichier.
+    bool running;                     // Simulation en cours ou non.
+    bool editing;                     // Mode édition activé ou non.
+    int iterationCount;               // Nombre d'itérations effectuées.
+    int delay;                        // Temps en millisecondes entre les mises à jour.
 
-    bool running; // Indique si la simulation est en cours.
-    bool editing; // Mode édition pour permettre de modifier les cellules avec la souris.
-    int iterationCount; // Compteur du nombre d'itérations.
-    int delay; // Délai entre les mises à jour de la grille (en millisecondes).
-    StructureData structureData; // Variable pour stocker les données de la structure.
+    void updateToriqueText() {
+        toriqueText.setString("Mode Torique : " + std::string(grid.isTorique() ? "Actif" : "Inactif"));
+    }
 
 public:
-    GraphicGame(int ligne, int colonne, float Size, int delayMs) // Constructeur avec paramètres pour la grille.
-        : grid(ligne, colonne, Size), // Initialisation de la grille.
-        window(sf::VideoMode(colonne* Size, ligne* Size + 60), "Jeu de la Vie"), // Initialisation de la fenêtre.
-        running(false), editing(true), iterationCount(0), delay(delayMs) { // Initialisation des variables.
-
-        if (!font.loadFromFile("Roboto-Regular.ttf")) { // Chargement de la police.
-            throw std::runtime_error("Impossible de charger la police 'Roboto-Regular.ttf'."); // Erreur si la police n'est pas chargée.
-        }
-
-        iterationText.setFont(font); // Configuration de la police pour le texte.
-        iterationText.setCharacterSize(20); // Taille du texte.
-        iterationText.setFillColor(sf::Color::Black); // Couleur du texte.
-        iterationText.setPosition(10, ligne * Size + 10); // Position du texte sous la grille.
-    }
-
-    GraphicGame(const std::string& filename, float Size, int delayMS) // Constructeur pour charger une grille depuis un fichier.
-        : grid(0, 0, Size), // Initialisation par défaut de la grille.
-        window(sf::VideoMode(800, 600), "Jeu de la Vie"), // Fenêtre avec taille par défaut.
-        running(false), editing(false), iterationCount(0), delay(delayMS) { // Initialisation des variables.
-
-        grid.loadFromFile(filename); // Chargement de la grille depuis un fichier.
-        window.create(sf::VideoMode(grid.getcolonne() * Size, grid.getligne() * Size + 60), "Jeu de la Vie"); // Redimensionnement de la fenêtre selon la grille.
-        
-        if (!font.loadFromFile("Roboto-Regular.ttf")) { // Chargement de la police.
-            throw std::runtime_error("Impossible de charger la police 'Roboto-Regular.ttf'."); // Erreur si la police n'est pas chargée.
-        }
-
-        iterationText.setFont(font); // Configuration de la police pour le texte.
-        iterationText.setCharacterSize(20); // Taille du texte.
-        iterationText.setFillColor(sf::Color::Black); // Couleur du texte.
-        iterationText.setPosition(10, grid.getligne() * Size + 10); // Position du texte sous la grille.
-
-    
-    }
-
-
-    void createWindowWithText(const std::string& textContent) {
-        sf::Font font;
+    // Constructeur pour grille vide.
+    GraphicGame(int ligne, int colonne, float cellSize, int delayMs, bool torique)
+        : grid(ligne, colonne, cellSize, torique),
+        window(sf::VideoMode(colonne* cellSize, ligne* cellSize + 60), "Jeu de la Vie"),
+        running(false), editing(true), iterationCount(0), delay(delayMs) {
         if (!font.loadFromFile("Roboto-Regular.ttf")) {
-            throw std::runtime_error("Impossible de charger la police.");
+            throw std::runtime_error("Impossible de charger la police 'Roboto-Regular.ttf'.");
         }
 
-        sf::Text text;
-        text.setFont(font);
-        text.setString(textContent);
-        text.setCharacterSize(30);
-        text.setFillColor(sf::Color::Black);
+        // Configuration des textes.
+        iterationText.setFont(font);
+        iterationText.setCharacterSize(20);
+        iterationText.setFillColor(sf::Color::Black);
+        iterationText.setPosition(10, ligne * cellSize + 10);
 
-        sf::FloatRect textBounds = text.getLocalBounds();
-        float window2Width = textBounds.width + 50;
-        float window2Height = textBounds.height + 50;
-
-        // Créer la fenêtre
-        sf::RenderWindow window2(sf::VideoMode(static_cast<unsigned int>(window2Width), static_cast<unsigned int>(window2Height)), "Menu des touches");
-
-        // Positionner la fenêtre à une position spécifique (par exemple, x=100, y=100)
-        window2.setPosition(sf::Vector2i(100, 100)); // Changez ces valeurs selon vos besoins
-
-        text.setPosition(25, 25);
-
-        while (window2.isOpen()) {
-            sf::Event event;
-            while (window2.pollEvent(event)) {
-                if (event.type == sf::Event::Closed) {
-                    window2.close();
-                }
-                else if (event.type == sf::Event::MouseButtonPressed) {
-                    window2.close();
-                }
-            }
-        
-
-            window2.clear(sf::Color::White);
-            window2.draw(text);
-            window2.display();
-        }
+        toriqueText.setFont(font);
+        toriqueText.setCharacterSize(20);
+        toriqueText.setFillColor(sf::Color::Black);
+        toriqueText.setPosition(200, ligne * cellSize + 10);
+        updateToriqueText();
     }
 
+    // Constructeur pour charger une grille depuis un fichier.
+    GraphicGame(const std::string& filename, float cellSize, int delayMs, bool torique)
+        : grid(0, 0, cellSize, torique),
+        window(sf::VideoMode(800, 600), "Jeu de la Vie"),
+        running(false), editing(false), iterationCount(0), delay(delayMs) {
+        grid.loadFromFile(filename);
+        window.create(sf::VideoMode(grid.getcolonne() * cellSize, grid.getligne() * cellSize + 60), "Jeu de la Vie");
 
-    void loadStructureFromFile(const std::string& filename) {
-        std::ifstream file(filename);
-        if (!file) {
-            std::cerr << "Erreur lors de l'ouverture du fichier : " << filename << std::endl;
-            return;
+        if (!font.loadFromFile("Roboto-Regular.ttf")) {
+            throw std::runtime_error("Impossible de charger la police 'Roboto-Regular.ttf'.");
         }
 
-        structureData.cells.clear(); // Réinitialise les cellules.
-        int x, y;
-        while (file >> x >> y) { // Supposons que le fichier contient des paires de coordonnées.
-            structureData.cells.emplace_back(x, y); // Ajoute chaque paire à la structure.
-            std::cout << "Cellule chargée : (" << x << ", " << y << ")" << std::endl; // Debug
-        }
+        iterationText.setFont(font);
+        iterationText.setCharacterSize(20);
+        iterationText.setFillColor(sf::Color::Black);
+        iterationText.setPosition(10, grid.getligne() * cellSize + 10);
 
-        file.close(); // Ferme le fichier.
+        toriqueText.setFont(font);
+        toriqueText.setCharacterSize(20);
+        toriqueText.setFillColor(sf::Color::Black);
+        toriqueText.setPosition(200, grid.getligne() * cellSize + 10);
+        updateToriqueText();
     }
 
+    // Gestion des entrées utilisateur.
     void handleInput(sf::Event& event) {
         if (event.type == sf::Event::Closed) {
             window.close();
         }
         else if (event.type == sf::Event::MouseButtonPressed && editing) {
-            int gridX = event.mouseButton.x / grid.getCellSize(); // Index de la colonne
-            int gridY = event.mouseButton.y / grid.getCellSize(); // Index de la ligne
+            int gridX = event.mouseButton.x / grid.getCellSize();
+            int gridY = event.mouseButton.y / grid.getCellSize();
             if (event.mouseButton.button == sf::Mouse::Left) {
                 grid.toggleCell(event.mouseButton.x, event.mouseButton.y);
             }
             else if (event.mouseButton.button == sf::Mouse::Middle) {
-                // Action pour la molette de la souris
-                
-                grid.toggleObstacle(gridX, gridY); // Toggle l'état obstacle
-            }
-            else if (event.mouseButton.button == sf::Mouse::Right) {
-                int gridX = event.mouseButton.x / grid.getCellSize(); // Index de la colonne
-                int gridY = event.mouseButton.y / grid.getCellSize(); // Index de la ligne
-
-                // Placer la structure chargée depuis le fichier
-                for (const auto& cell : structureData.cells) {
-                    int x = gridY + cell.second;
-                    int y = gridX + cell.first;
-                    if (x >= 0 && x < grid.getligne() && y >= 0 && y < grid.getcolonne()) {
-                        grid.toggleCell(y * grid.getCellSize(), x * grid.getCellSize());
-                    }
-                }
+                grid.toggleObstacle(gridX, gridY);
             }
         }
         else if (event.type == sf::Event::KeyPressed) {
@@ -157,59 +95,39 @@ public:
                 running = !running;
                 editing = !running;
             }
-            else if (event.key.code == sf::Keyboard::G && !running) {
-                loadStructureFromFile("glider.txt");
-                std::cout << "Structure chargée. Cliquez avec le bouton droit pour l'appliquer." << std::endl;
-            }
-            else if (event.key.code == sf::Keyboard::H && !running) {
-                loadStructureFromFile("canon_glider.txt");
-                std::cout << "Structure chargée. Cliquez avec le bouton droit pour l'appliquer." << std::endl;
-            }
-            else if (event.key.code == sf::Keyboard::C && editing) {
-                window.close();
-            }
             else if (event.key.code == sf::Keyboard::R && editing) {
                 grid.clearGrid();
             }
             else if (event.key.code == sf::Keyboard::T) {
-                std::string message = "Pause : P\n"
-                    "Reinitialiser : R      \n"
-                    "Objet 1 : G\n"
-                    "Objet 2 : H\n"
-                    "Fermer : C";
-
-                createWindowWithText(message); // Appeler la fonction pour créer la fenêtre avec le texte
-                
+                grid.setTorique(!grid.isTorique());
+                updateToriqueText();
             }
         }
     }
 
-
-    void start() { // Méthode principale pour démarrer le jeu.
-        while (window.isOpen()) { // Boucle principale tant que la fenêtre est ouverte.
+    // Lancement du jeu.
+    void start() {
+        while (window.isOpen()) {
             sf::Event event;
-            while (window.pollEvent(event)) { // Gestion des événements utilisateur.
-                handleInput(event); // Appel de la méthode de gestion des entrées.
+            while (window.pollEvent(event)) {
+                handleInput(event);
             }
 
-            if (running) { // Si la simulation est en cours.
-                grid.updateGrid(); // Mise à jour de la grille.
-                iterationCount++; // Incrémentation du compteur d'itérations.
-                sf::sleep(sf::milliseconds(delay)); // Pause pour respecter le délai configuré.
+            if (running) {
+                grid.updateGrid();
+                iterationCount++;
+                sf::sleep(sf::milliseconds(delay));
             }
 
-            // Mise à jour du texte des instructions
-            touche.setString("Pause : P    Reinitialiser : R, Objet 1 : G   Objet 2 : H    Fermer : C");
+            iterationText.setString("Iterations: " + std::to_string(iterationCount));
 
-            iterationText.setString("Iterations: " + std::to_string(iterationCount)); // Mise à jour du texte d'itérations.
-
-            window.clear(sf::Color::White); // Efface la fenêtre avec un fond blanc.
-            grid.draw(window); // Dessine la grille.
-            window.draw(iterationText); // Dessine le texte des itérations.
-            window.draw(touche); // Dessine le texte des instructions.
-            window.display(); // Affiche le contenu de la fenêtre.
+            window.clear(sf::Color::White);
+            grid.draw(window);
+            window.draw(iterationText);
+            window.draw(toriqueText);
+            window.display();
         }
     }
 };
 
-#endif // Fin de la protection contre les inclusions multiples.
+#endif // GAME_HPP

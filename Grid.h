@@ -5,28 +5,36 @@
 #include <vector> 
 #include <fstream>
 #include "Cell.h" 
-
 class Grid {
 private:
-    int ligne, colonne; // Nombre de lignes et de colonnes de la grille.
-    float cellSize; // Taille d'une cellule en pixels.
-    std::vector<std::vector<Cell>> cells; // Grille de cellules.
+    int ligne, colonne; // Nombre de lignes et de colonnes.
+    float cellSize; // Taille des cellules.
+    std::vector<std::vector<Cell>> cells; // Matrice des cellules.
+    bool torique; // Indique si la grille est torique.
 
-    int countNeighbors(int x, int y) const { // compter les voisins vivants d'une cellule.
-        int count = 0; 
-        for (int dx = -1; dx <= 1; ++dx) { 
-            for (int dy = -1; dy <= 1; ++dy) { 
-                if (dx == 0 && dy == 0) continue; 
+    // Calcul des voisins vivants.
+    int countNeighbors(int x, int y) const {
+        int count = 0;
+        for (int dx = -1; dx <= 1; ++dx) {
+            for (int dy = -1; dy <= 1; ++dy) {
+                if (dx == 0 && dy == 0) continue;
 
-                // Gestion des coordonnées en mode torique
-                int nx = (x + dx + ligne) % ligne; 
-                int ny = (y + dy + colonne) % colonne; 
+                int nx = x + dx;
+                int ny = y + dy;
 
-                // Incrémente le compteur si le voisin est vivant.
+                // Mode torique ou non.
+                if (torique) {
+                    nx = (nx + ligne) % ligne;
+                    ny = (ny + colonne) % colonne;
+                }
+                else if (nx < 0 || nx >= ligne || ny < 0 || ny >= colonne) {
+                    continue; // Ignore les voisins hors limites.
+                }
+
                 count += cells[nx][ny].getAlive();
             }
         }
-        return count; 
+        return count;
     }
 
 public:
@@ -35,8 +43,16 @@ public:
         return cellSize;
     }
 
-    Grid(int lig, int col, float size) // Constructeur de la grille.
-        : ligne(lig), colonne(col), cellSize(size), cells(lig, std::vector<Cell>(col)) {} // Initialise les dimensions et les cellules.
+    Grid(int lig, int col, float size, bool isTorique = true)
+        : ligne(lig), colonne(col), cellSize(size), cells(lig, std::vector<Cell>(col)), torique(isTorique) {}
+
+    void setTorique(bool isTorique) {
+        torique = isTorique;
+    }
+
+    bool isTorique() const {
+        return torique;
+    }
 
     const std::vector<std::vector<Cell>>& getCells() const { return cells; } // Retourne la grille des cellules.
 
