@@ -15,14 +15,15 @@ private:
     Grid grid; // Instance de la grille représentant l'état du jeu.
     int iterationCount; // Compteur d'itérations.
     int delay; // Délai entre chaque mise à jour de la grille (en millisecondes).
+    bool torique; // Mode torique.
     std::atomic<bool> running; // Variable atomique pour contrôler l'exécution du jeu (thread-safe).
     std::ofstream outputFile; // Flux de fichier pour sauvegarder les états du jeu.
     bool pausing=0;
 
 public:
     // Constructeur pour initialiser le jeu avec une grille vide.
-    ConsoleGame(int ligne, int colonne, int delayms)
-        : grid(ligne, colonne, 1.0), 
+    ConsoleGame(int ligne, int colonne, int delayms, bool isTorique)
+        : grid(ligne, colonne, 1.0, isTorique), torique(isTorique),
         iterationCount(0), delay(delayms), running(true) { 
         outputFile.open("sauvegarde.txt"); // Ouvre un fichier pour sauvegarder les états.
         if (!outputFile.is_open()) { // Vérifie si le fichier s'est bien ouvert.
@@ -31,9 +32,9 @@ public:
     }
 
     // Constructeur pour initialiser le jeu à partir d'un fichier existant.
-    ConsoleGame(const std::string& filename, int delayms)
-        : grid(0, 0, 1.0f), iterationCount(0), delay(delayms), running(true) { 
-        grid.loadFromFile(filename); 
+    ConsoleGame(const std::string& filename, int delayMs, bool isTorique)
+        : grid(0, 0, 1.0, isTorique), delay(delayMs), torique(isTorique) {
+        grid.loadFromFile(filename);
         outputFile.open("sauvegarde.txt"); // Ouvre un fichier pour sauvegarder les états.
         if (!outputFile.is_open()) { // Vérifie si le fichier s'est bien ouvert.
             throw std::runtime_error("Impossible d'ouvrir le fichier de sauvegarde.");

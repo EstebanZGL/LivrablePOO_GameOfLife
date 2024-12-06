@@ -11,6 +11,7 @@ private:
     int ligne, colonne; // Nombre de lignes et de colonnes de la grille.
     float cellSize; // Taille d'une cellule en pixels.
     std::vector<std::vector<Cell>> cells; // Grille de cellules.
+    bool torique; // Indique si la grille est torique.
 
     int countNeighbors(int x, int y) const { // compter les voisins vivants d'une cellule.
         int count = 0; 
@@ -29,16 +30,28 @@ private:
         return count; 
     }
 
+
 public:
 
     float getCellSize() const { // M�thode pour obtenir la taille de la cellule
         return cellSize;
     }
 
-    Grid(int lig, int col, float size) // Constructeur de la grille.
-        : ligne(lig), colonne(col), cellSize(size), cells(lig, std::vector<Cell>(col)) {} // Initialise les dimensions et les cellules.
+    Grid(int lig, int col, float size, bool isTorique)
+        : ligne(lig), colonne(col), cellSize(size), cells(lig, std::vector<Cell>(col)), torique(isTorique) {
+    }
 
     const std::vector<std::vector<Cell>>& getCells() const { return cells; } // Retourne la grille des cellules.
+
+    bool getTorique() const{
+        return torique;
+    }
+
+    void setTorique(bool isTorique) {
+        torique = isTorique;
+    }
+
+    
 
 
     void loadFromFile(const std::string& filename) {
@@ -89,8 +102,7 @@ public:
         }
     }
 
-
-    void toggleCell(int sourisX, int sourisY) { // Change l'état d'une cellule en fonction des coordonnées de la souris.
+       void toggleCell(int sourisX, int sourisY) { // Change l'état d'une cellule en fonction des coordonnées de la souris.
         int x = sourisY / cellSize;
         int y = sourisX / cellSize;
         if (x >= 0 && x < ligne && y >= 0 && y < colonne) {
