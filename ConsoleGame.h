@@ -54,17 +54,17 @@ public:
             printf("\033c"); // Efface la console.
             for (int x = 0; x < grid.getligne(); ++x) {
                 for (int y = 0; y < grid.getcolonne(); ++y) {
-                    if (grid.getCells()[x][y].getAlive() && !grid.getCells()[x][y].isObstacleAlive()) { // Si la cellule est vivante.
+                    if (grid.getCells()[x][y].getAlive()) { // Si la cellule est vivante.
                         std::cout << "\033[33m1\033[0m "; // Affiche "1" en jaune 033=1 en ESC.
-                    }
-                    else if (grid.getCells()[x][y].isObstacleAlive()) {
-                        std::cout << "\033[32mX\033[0m "; //Affiche "X" en vert pour l'obstacle vivant
-                    }
-                    else if (grid.getCells()[x][y].isObstacle() && !grid.getCells()[x][y].isObstacleAlive()) {
-                        std::cout << "\033[31mX\033[0m "; //Affiche "X" en rouge pour l'obstacle mort
                     }
                     else {
                         std::cout << "0 ";
+                    }
+                    if (grid.getCells()[x][y].isObstacleAlive()) {
+                        std::cout << "\033[32mX\033[0m "; //Affiche "X" en vert pour l'obstacle vivant
+                    }
+                    else if (grid.getCells()[x][y].isObstacle() && !grid.getCells()[x][y].isObstacleAlive()) {
+                        std::cout << "\033[31mX\033[0m "; //Affiche "X" en vert pour l'obstacle vivant
                     }
                 }
                 std::cout << std::endl;

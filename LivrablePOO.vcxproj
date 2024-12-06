@@ -132,6 +132,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Cell.cpp" />
+    <ClCompile Include="ConsoleGame.cpp" />
+    <ClCompile Include="Grid.cpp" />
+    <ClCompile Include="GraphicGame.cpp" />
     <ClCompile Include="LivrablePOO.cpp" />
   </ItemGroup>
   <ItemGroup>
