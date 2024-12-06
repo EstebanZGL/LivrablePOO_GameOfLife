@@ -18,6 +18,7 @@ private:
     sf::Font font;                    // Police pour le texte.
     sf::Text iterationText;           // Texte pour afficher le nombre d'itérations.
     sf::Text toriqueText;             // Texte pour afficher le mode torique.
+    sf::Text fonctionText;
     StructureData structureData;      // Données pour les structures chargées depuis un fichier.
     bool running;                     // Simulation en cours ou non.
     bool editing;                     // Mode édition activé ou non.
@@ -32,7 +33,7 @@ public:
     // Constructeur pour grille vide.
     GraphicGame(int ligne, int colonne, float cellSize, int delayMs, bool torique)
         : grid(ligne, colonne, cellSize, torique),
-        window(sf::VideoMode(colonne* cellSize, ligne* cellSize + 60), "Jeu de la Vie"),
+        window(sf::VideoMode(colonne* cellSize , ligne* cellSize + 100), "Jeu de la Vie"),
         running(false), editing(true), iterationCount(0), delay(delayMs) {
         if (!font.loadFromFile("Roboto-Regular.ttf")) {
             throw std::runtime_error("Impossible de charger la police 'Roboto-Regular.ttf'.");
@@ -49,6 +50,11 @@ public:
         toriqueText.setFillColor(sf::Color::Black);
         toriqueText.setPosition(200, ligne * cellSize + 10);
         updateToriqueText();
+
+        fonctionText.setFont(font);
+        fonctionText.setCharacterSize(20);
+        fonctionText.setFillColor(sf::Color::Black);
+        fonctionText.setPosition(10, ligne * cellSize + 50);
     }
 
     // Constructeur pour charger une grille depuis un fichier.
@@ -73,6 +79,11 @@ public:
         toriqueText.setFillColor(sf::Color::Black);
         toriqueText.setPosition(200, grid.getligne() * cellSize + 10);
         updateToriqueText();
+
+        fonctionText.setFont(font);
+        fonctionText.setCharacterSize(20);
+        fonctionText.setFillColor(sf::Color::Black); 
+        fonctionText.setPosition(10, grid.getligne() * cellSize + 50);
     }
 
     // Gestion des entrées utilisateur.
@@ -121,10 +132,13 @@ public:
 
             iterationText.setString("Iterations: " + std::to_string(iterationCount));
 
+            fonctionText.setString("clique milieu -> obstacle, P-> debut/pause, R pour reinitialiser, T torique/ non torique");
+
             window.clear(sf::Color::White);
             grid.draw(window);
             window.draw(iterationText);
             window.draw(toriqueText);
+            window.draw(fonctionText);
             window.display();
         }
     }

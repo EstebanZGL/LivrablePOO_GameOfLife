@@ -24,8 +24,7 @@ namespace ChoixGraphiqueConsole {
         try {
             GraphicGame graphicGame(filename, cellSize, delay, torique);
             graphicGame.start();
-        }
-        catch (const std::exception& e) {
+        } catch (const std::exception& e) {
             std::cerr << "Erreur : " << e.what() << std::endl;
         }
     }
@@ -34,8 +33,7 @@ namespace ChoixGraphiqueConsole {
         try {
             ConsoleGame consoleGame(filename, delay, torique);
             consoleGame.start();
-        }
-        catch (const std::exception& e) {
+        } catch (const std::exception& e) {
             std::cerr << "Erreur : " << e.what() << std::endl;
         }
     }
@@ -46,8 +44,7 @@ namespace ChoixEditer {
         try {
             GraphicGame graphicGame(ligne, colonne, cellSize, delay, torique);
             graphicGame.start();
-        }
-        catch (const std::exception& e) {
+        } catch (const std::exception& e) {
             std::cerr << "Erreur : " << e.what() << std::endl;
         }
     }
@@ -81,16 +78,13 @@ int main() {
 
         if (choix == 'G' || choix == 'g') {
             ChoixGraphiqueConsole::lancerModeGraphique(filename, cellSize, delay, torique);
-        }
-        else if (choix == 'C' || choix == 'c') {
+        } else if (choix == 'C' || choix == 'c') {
             ChoixGraphiqueConsole::lancerModeConsole(filename, delay, torique);
-        }
-        else {
+        } else {
             std::cerr << "Choix invalide pour le mode (G/C)." << std::endl;
             return 1;
         }
-    }
-    else if (choix == 'E' || choix == 'e') {
+    } else if (choix == 'E' || choix == 'e') {
         // Demande les dimensions de la grille.
         std::cout << "Entrez le nombre de lignes : ";
         std::cin >> ligne;
@@ -100,11 +94,10 @@ int main() {
         std::cin >> delay;
 
         ChoixEditer::editerManuellement(ligne, colonne, cellSize, delay, torique);
-    }
-    else {
+    } else {
         std::cerr << "Choix invalide pour la méthode de configuration (L/E)." << std::endl;
         return 1;
     }
 
-    return 0;
+    return 0; 
 }
