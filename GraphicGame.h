@@ -42,14 +42,14 @@ public:
         iterationText.setPosition(10, ligne * cellSize + 10); // Position du texte sous la grille.
     }
 
-     GraphicGame(const std::string& filename, float cellSize, int delayMs, bool torique)
+    GraphicGame(const std::string& filename, float cellSize, int delayMs, bool torique)
         : grid(0, 0, cellSize, torique),
         window(sf::VideoMode(800, 600), "Jeu de la Vie"), // Fenêtre avec taille par défaut.
         running(false), editing(false), iterationCount(0), delay(delayMs) { // Initialisation des variables.
 
         grid.loadFromFile(filename); // Chargement de la grille depuis un fichier.
         window.create(sf::VideoMode(grid.getcolonne() * cellSize, grid.getligne() * cellSize + 60), "Jeu de la Vie"); // Redimensionnement de la fenêtre selon la grille.
-        
+
         if (!font.loadFromFile("Roboto-Regular.ttf")) { // Chargement de la police.
             throw std::runtime_error("Impossible de charger la police 'Roboto-Regular.ttf'."); // Erreur si la police n'est pas chargée.
         }
@@ -59,7 +59,7 @@ public:
         iterationText.setFillColor(sf::Color::Black); // Couleur du texte.
         iterationText.setPosition(10, grid.getligne() * cellSize + 10); // Position du texte sous la grille.
 
-    
+
     }
 
 
@@ -97,7 +97,7 @@ public:
                     window2.close();
                 }
             }
-        
+
 
             window2.clear(sf::Color::White);
             window2.draw(text);
@@ -123,7 +123,7 @@ public:
         file.close(); // Ferme le fichier.
     }
 
-       void handleInput(sf::Event& event) {
+    void handleInput(sf::Event& event) {
         if (event.type == sf::Event::Closed) {
             window.close();
         }
@@ -135,7 +135,7 @@ public:
             }
             else if (event.mouseButton.button == sf::Mouse::Middle) {
                 // Action pour la molette de la souris
-                
+
                 grid.toggleObstacle(gridX, gridY); // Toggle l'état obstacle
             }
             else if (event.mouseButton.button == sf::Mouse::Right) {
@@ -171,7 +171,7 @@ public:
             else if (event.key.code == sf::Keyboard::R && editing) {
                 grid.clearGrid();
             }
-            
+
             else if (event.key.code == sf::Keyboard::T) {
                 std::string message = "Pause : P\n"
                     "Reinitialiser : R      \n"
@@ -181,7 +181,7 @@ public:
                     "Fermer : C";
 
                 createWindowWithText(message); // Appeler la fonction pour créer la fenêtre avec le texte
-                
+
             }
         }
     }

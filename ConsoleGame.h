@@ -18,16 +18,16 @@ private:
     bool torique; // Mode torique.
     std::atomic<bool> running; // Variable atomique pour contrôler l'exécution du jeu (thread-safe).
     std::ofstream outputFile; // Flux de fichier pour sauvegarder les états du jeu.
-    bool pausing=0;
+    bool pausing = 0;
 
 public:
     // Constructeur pour initialiser le jeu avec une grille vide.
     ConsoleGame(int ligne, int colonne, int delayms, bool isTorique)
         : grid(ligne, colonne, 1.0, isTorique), torique(isTorique),
-        iterationCount(0), delay(delayms), running(true) { 
+        iterationCount(0), delay(delayms), running(true) {
         outputFile.open("sauvegarde.txt"); // Ouvre un fichier pour sauvegarder les états.
         if (!outputFile.is_open()) { // Vérifie si le fichier s'est bien ouvert.
-            throw std::runtime_error("Impossible d'ouvrir le fichier de sauvegarde."); 
+            throw std::runtime_error("Impossible d'ouvrir le fichier de sauvegarde.");
         }
     }
 
@@ -43,8 +43,8 @@ public:
 
     // Destructeur pour fermer le fichier de sortie si nécessaire.
     ~ConsoleGame() {
-        if (outputFile.is_open()) { 
-            outputFile.close(); 
+        if (outputFile.is_open()) {
+            outputFile.close();
         }
     }
 
@@ -81,27 +81,27 @@ public:
 
     // Méthode pour sauvegarder l'état actuel de la grille dans un fichier.
     void saveCurrentState() {
-        if (outputFile.is_open()) { 
-            outputFile << "Itération: " << iterationCount << "\n"; 
-            for (int x = 0; x < grid.getligne(); ++x) { 
-                for (int y = 0; y < grid.getcolonne(); ++y) { 
+        if (outputFile.is_open()) {
+            outputFile << "Itération: " << iterationCount << "\n";
+            for (int x = 0; x < grid.getligne(); ++x) {
+                for (int y = 0; y < grid.getcolonne(); ++y) {
                     outputFile << (grid.getCells()[x][y].getAlive() ? "1" : "0") << " ";
 
                 }
-                outputFile << "\n"; 
+                outputFile << "\n";
             }
 
-            outputFile << "\n"; 
+            outputFile << "\n";
         }
     }
 
     // Méthode exécutée dans un thread séparé pour gérer les entrées utilisateur.
     void inputThread() {
-        char input; 
+        char input;
         while (running) { // Boucle continue tant que le jeu est en cours.
-            std::cin >> input; 
-            if (input == 'q') { 
-                running = false; 
+            std::cin >> input;
+            if (input == 'q') {
+                running = false;
 
             }
             else if (input == 'p') {
@@ -116,15 +116,14 @@ public:
     void start() {
         // Lancement du thread pour gérer les entrées utilisateur.
         std::thread inputThread(&ConsoleGame::inputThread, this);
-        while (running) { 
+        while (running) {
 
-            displayGrid(); 
-            grid.updateGrid(); 
-            iterationCount++; 
+            displayGrid();
+            grid.updateGrid();
+            iterationCount++;
             std::this_thread::sleep_for(std::chrono::milliseconds(delay)); // Pause entre les mises à jour.
         }
 
         inputThread.join(); // Attend que le thread d'entrée utilisateur se termine.
     }
 };
-

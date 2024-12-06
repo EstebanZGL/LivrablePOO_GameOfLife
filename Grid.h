@@ -14,20 +14,20 @@ private:
     bool torique; // Indique si la grille est torique.
 
     int countNeighbors(int x, int y) const { // compter les voisins vivants d'une cellule.
-        int count = 0; 
-        for (int dx = -1; dx <= 1; ++dx) { 
-            for (int dy = -1; dy <= 1; ++dy) { 
-                if (dx == 0 && dy == 0) continue; 
+        int count = 0;
+        for (int dx = -1; dx <= 1; ++dx) {
+            for (int dy = -1; dy <= 1; ++dy) {
+                if (dx == 0 && dy == 0) continue;
 
                 // Gestion des coordonnées en mode torique
-                int nx = (x + dx + ligne) % ligne; 
-                int ny = (y + dy + colonne) % colonne; 
+                int nx = (x + dx + ligne) % ligne;
+                int ny = (y + dy + colonne) % colonne;
 
                 // Incrémente le compteur si le voisin est vivant.
                 count += cells[nx][ny].getAlive();
             }
         }
-        return count; 
+        return count;
     }
 
 
@@ -43,7 +43,7 @@ public:
 
     const std::vector<std::vector<Cell>>& getCells() const { return cells; } // Retourne la grille des cellules.
 
-    bool getTorique() const{
+    bool getTorique() const {
         return torique;
     }
 
@@ -51,7 +51,7 @@ public:
         torique = isTorique;
     }
 
-    
+
 
 
     void loadFromFile(const std::string& filename) {
@@ -84,7 +84,7 @@ public:
 
 
     int getcolonne() const { return colonne; }
-    int getligne() const { return ligne; } 
+    int getligne() const { return ligne; }
 
     void toggleObstacle(int y, int x) {
         if (x >= 0 && x < ligne && y >= 0 && y < colonne) {
@@ -92,7 +92,7 @@ public:
         }
     }
 
-       void toggleCell(int sourisX, int sourisY) { // Change l'état d'une cellule en fonction des coordonnées de la souris.
+    void toggleCell(int sourisX, int sourisY) { // Change l'état d'une cellule en fonction des coordonnées de la souris.
         int x = sourisY / cellSize;
         int y = sourisX / cellSize;
         if (x >= 0 && x < ligne && y >= 0 && y < colonne) {
@@ -106,33 +106,33 @@ public:
 
     void updateGrid() { // Met à jour la grille .
         std::vector<std::vector<Cell>> next = cells; // Copie de l'état actuel des cellules.
-        for (int x = 0; x < ligne; ++x) { 
-            for (int y = 0; y < colonne; ++y) { 
+        for (int x = 0; x < ligne; ++x) {
+            for (int y = 0; y < colonne; ++y) {
                 int neighbors = countNeighbors(x, y); // Compte les voisins vivants.
                 if (cells[x][y].getAlive()) { // Si la cellule est vivante.
                     next[x][y].setAlive(neighbors == 2 || neighbors == 3); // Survit si 2 ou 3 voisins, sinon meurt.
                 }
-                else { 
+                else {
                     next[x][y].setAlive(neighbors == 3); // Devient vivante si exactement 3 voisins.
                 }
 
             }
-       
+
         }
-       cells = next; // Met � jour la grille avec le nouvel �tat.
+        cells = next; // Met � jour la grille avec le nouvel �tat.
     }
-    
+
     void clearGrid() {
         std::cout << "Reset de la grille" << std::endl;
         std::vector<std::vector<Cell>> next = cells; // Copie de l'�tat actuel des cellules.
-                for (int x = 0; x < ligne; ++x) { // Parcours des lignes.
-                    for (int y = 0; y < colonne; ++y) { // Parcours des colonnes.
-                        next[x][y].clearCell();
-                    }
-                }
-                cells = next; // Met � jour la grille avec le nouvel �tat.
+        for (int x = 0; x < ligne; ++x) { // Parcours des lignes.
+            for (int y = 0; y < colonne; ++y) { // Parcours des colonnes.
+                next[x][y].clearCell();
+            }
         }
-    
+        cells = next; // Met � jour la grille avec le nouvel �tat.
+    }
+
 
     void draw(sf::RenderWindow& window) const { // Dessine la grille dans une fenêtre SFML.
         sf::RectangleShape cellShape(sf::Vector2f(cellSize, cellSize)); // Crée une forme rectangulaire pour une cellule.
