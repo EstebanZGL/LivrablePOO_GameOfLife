@@ -52,10 +52,20 @@ public:
                 for (int y = 0; y < colonne; ++y) {
                     int state;
                     if (file >> state) { // Tente de lire l'état de la cellule
-                        cells[x][y].setAlive(state == 1); // Définit l'état de la cellule
-                    }
-                    else {
-                        cells[x][y].setAlive(false); // Si aucune valeur, la cellule est morte
+                        if (state == 1) {
+                            cells[x][y].setAlive(true); // Cellule vivante
+                        }
+                        else if (state == 0) {
+                            cells[x][y].setAlive(false); // Cellule morte
+                        }
+                        else if (state == 2 || state == 3) {
+                            // Traitement des obstacles : 
+                            // Les cellules avec l'état '2' ou '3' seront des obstacles.
+                            cells[x][y].toggleObstacle(state); // Déclenche la transformation en obstacle mort ou vivant
+                        }
+                        else {
+                            cells[x][y].setAlive(false); // Cellule morte
+                        }
                     }
                 }
                 // Ignore les espaces restants dans la ligne

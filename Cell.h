@@ -31,7 +31,7 @@ public:
     }
 
     bool getAliveColor() const {
-        return state == CellState::ALIVE ;
+        return state == CellState::ALIVE;
     }
 
     void toggleObstacle() {
@@ -42,7 +42,16 @@ public:
             state = CellState::OBSTACLE_ALIVE; // Si c'est un obstacle mort, on le rend vivant
         }
         else if (state == CellState::DEAD) {
-            state = CellState::OBSTACLE_DEAD;
+            state = CellState::OBSTACLE_DEAD; // On marque la cellule comme obstacle mort
+        }
+    }
+
+    void toggleObstacle(int stateInput) {
+        if (stateInput == 2) {
+            state = CellState::OBSTACLE_ALIVE; // Obstacle vivant
+        }
+        else {
+            state = CellState::OBSTACLE_DEAD; // Obstacle mort
         }
     }
 
