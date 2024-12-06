@@ -39,7 +39,7 @@ private:
 
 public:
 
-    float getCellSize() const { // M�thode pour obtenir la taille de la cellule
+    float getCellSize() const { // Méthode pour obtenir la taille de la cellule
         return cellSize;
     }
 

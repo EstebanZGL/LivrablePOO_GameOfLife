@@ -1,7 +1,7 @@
-#include <iostream>        // Pour les entrées/sorties standard.
-#include "GraphicGame.h"   // Classe pour le mode graphique.
-#include "ConsoleGame.h"   // Classe pour le mode console.
-#include <fstream>         // Pour la gestion des fichiers.
+#include <iostream>        
+#include "GraphicGame.h"   
+#include "ConsoleGame.h"   
+#include <fstream>         
 
 int main() {
     int ligne, colonne, delay; // Dimensions de la grille et délai entre itérations.
@@ -89,6 +89,5 @@ int main() {
         return 1;
     }
 
-    return 0; // Fin du programme avec succès.
+    return 0; 
 }
-x

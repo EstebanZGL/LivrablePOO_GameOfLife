@@ -4,7 +4,7 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
-#include "Grid.h" // Inclusion de la classe Grid pour manipuler la grille.
+#include "Grid.h" 
 
 class ConsoleGame {
 private:
@@ -15,13 +15,13 @@ private:
 public:
     // Constructeur qui charge une grille à partir d'un fichier.
     ConsoleGame(const std::string& filename, int delayMs, bool isTorique)
-        : grid(0, 0, 1.0f, isTorique), delay(delayMs), torique(isTorique) {
+        : grid(0, 0, 1.0, isTorique), delay(delayMs), torique(isTorique) {
         grid.loadFromFile(filename);
     }
 
     // Constructeur pour un jeu avec des dimensions spécifiques.
     ConsoleGame(int ligne, int colonne, int delayMs, bool isTorique)
-        : grid(ligne, colonne, 1.0f, isTorique), delay(delayMs), torique(isTorique) {}
+        : grid(ligne, colonne, 1.0, isTorique), delay(delayMs), torique(isTorique) {}
 
     // Affiche la grille à la console.
     void printGrid() const {
@@ -57,4 +57,4 @@ public:
     }
 };
 
-#endif // CONSOLEGAME_HPP
+#endif 
