@@ -215,7 +215,7 @@ public:
             touche.setString("Pause : P    Reinitialiser : R, Objet 1 : G   Objet 2 : H    Fermer : C");
 
             iterationText.setString("Iterations: " + std::to_string(iterationCount)); // Mise à jour du texte d'itérations.
-            toucheT.setString("menu: T ");//affichage T
+            toucheT.setString("Menu: T ");//affichage T
 
             window.clear(sf::Color::White); // Efface la fenêtre avec un fond blanc.
             grid.draw(window); // Dessine la grille.
