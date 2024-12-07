@@ -102,7 +102,7 @@ public:
     }
 
 
-    void updateGrid() { // Met à jour la grille .
+    void updateGrid() { // Met a jour la grille .
         std::vector<std::vector<Cell>> next = cells; // Copie de l'état actuel des cellules.
         for (int x = 0; x < ligne; ++x) { 
             for (int y = 0; y < colonne; ++y) { 
@@ -117,18 +117,18 @@ public:
             }
        
         }
-       cells = next; // Met � jour la grille avec le nouvel �tat.
+       cells = next; // Met a jour la grille avec le nouvel etat.
     }
     
     void clearGrid() {
         std::cout << "Reset de la grille" << std::endl;
-        std::vector<std::vector<Cell>> next = cells; // Copie de l'�tat actuel des cellules.
+        std::vector<std::vector<Cell>> next = cells; // Copie de l'etat actuel des cellules.
                 for (int x = 0; x < ligne; ++x) { // Parcours des lignes.
                     for (int y = 0; y < colonne; ++y) { // Parcours des colonnes.
                         next[x][y].clearCell();
                     }
                 }
-                cells = next; // Met � jour la grille avec le nouvel �tat.
+                cells = next; // Met a jour la grille avec le nouvel etat.
         }
     
 
