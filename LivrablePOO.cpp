@@ -5,7 +5,6 @@
 #include "ModeConsole.h" // Inclusion de la classe pour le mode console.
 #include <fstream>
 
-
 // Fonction pour vérifier la validité de la grille
 bool ValidationGrille(const std::vector<std::vector<int>>& grille) {
     // Exemple de vérification : la grille ne doit pas être vide
@@ -31,6 +30,7 @@ void testGrille() {
     std::vector<std::vector<int>> GrilleValide = { {0, 1, 0}, {1, 0, 1}, {0, 0, 0} };
     std::vector<std::vector<int>> GrilleVide = {};
     std::vector<std::vector<int>> GrilleInvalide = { {0, 1}, {1, 0, 1} };
+    std::vector<std::vector<int>> GrilleInvalideLongueur = { {0, 1, 0}, {1, 0} };
 
     // Test de la grille valide
     if (!ValidationGrille(GrilleValide)) {
@@ -48,16 +48,22 @@ void testGrille() {
         std::cout << "Test reussi : la grille vide est correcte." << std::endl;
     }
 
-    // Test de la grille invalide
+    // Test de la grille invalide (lignes de longueurs différentes)
     if (ValidationGrille(GrilleInvalide)) {
         std::cerr << "Echec du test : la grille invalide est jugee valide." << std::endl;
     }
     else {
         std::cout << "Test reussi : la grille invalide est correcte." << std::endl;
     }
+
+    // Test de la grille invalide (lignes de longueur incorrecte)
+    if (ValidationGrille(GrilleInvalideLongueur)) {
+        std::cerr << "Echec du test : la grille avec lignes de longueurs différentes est jugee valide." << std::endl;
+    }
+    else {
+        std::cout << "Test reussi : la grille avec lignes de longueurs différentes est correcte." << std::endl;
+    }
 }
-
-
 
 int main() { // Point d'entree principal du programme.
     int ligne, colonne, delai; // Variables pour les dimensions de la grille et le délai entre les itérations.
@@ -71,7 +77,6 @@ int main() { // Point d'entree principal du programme.
     std::cout << "Voulez-vous Lire(L) un fichier ou Editer(E) manuellement ? (L/E) : ";
     std::cin >> choix; // Lecture du choix de l'utilisateur.
 
-
     if (choix == 'L' || choix == 'l') { // Si l'utilisateur choisit de lire un fichier.
         std::cout << "Entrez le nom du fichier : ";
         std::string NomFichier; // Nom du fichier à charger.
@@ -80,7 +85,6 @@ int main() { // Point d'entree principal du programme.
         // Demande à l'utilisateur de choisir entre le mode graphique ou console.
         std::cout << "Voulez-vous Graphique(G) ou Console ? (G/C) : ";
         std::cin >> choix; // Lecture du choix.
-
 
         if (choix == 'G' || choix == 'g') { // Si l'utilisateur choisit le mode graphique.
             std::cout << "Entrez le temps entre chaque iteration (en millisecondes) : ";
@@ -92,12 +96,11 @@ int main() { // Point d'entree principal du programme.
                 ModeGraphique Graphique(NomFichier, TailleCellule, delai);
                 Graphique.Demarrage(); // Lancement du jeu.
             }
-            catch (const char* e) { // Gestion des erreurs éventuelles.
-                std::cerr << "Erreur : " << e << std::endl; // Affiche l'erreur.
+            catch (const std::exception& e) { // Gestion des erreurs éventuelles.
+                std::cerr << "Erreur : " << e.what() << std::endl; // Affiche l'erreur.
                 return 1; // Termine le programme avec un code d'erreur.
             }
         }
-
         else { // Si l'utilisateur choisit le mode console.
             testGrille(); // Ajoutez cette ligne pour exécuter les tests
             std::cout << "Entrez le temps entre chaque iteration (en millisecondes) : ";
@@ -108,12 +111,11 @@ int main() { // Point d'entree principal du programme.
                 ModeConsole Console(NomFichier, delai);
                 Console.Demarrage(); // Lancement du jeu.
             }
-            catch (const char* e) { // Gestion des erreurs éventuelles.
-                std::cerr << "Erreur : " << e << std::endl; // Affiche l'erreur.
+            catch (const std::exception& e) { // Gestion des erreurs éventuelles.
+                std::cerr << "Erreur : " << e.what() << std::endl; // Affiche l'erreur.
                 return 1; // Termine le programme avec un code d'erreur.
             }
         }
-
     }
     else { // Si l'utilisateur choisit d'éditer manuellement.
         // Demande les dimensions de la grille.
@@ -130,11 +132,11 @@ int main() { // Point d'entree principal du programme.
             ModeGraphique Graphique(ligne, colonne, TailleCellule, delai);
             Graphique.Demarrage(); // Lancement du jeu.
         }
-        catch (const char* e) { // Gestion des erreurs éventuelles.
-            std::cerr << "Erreur : " << e << std::endl; // Affiche l'erreur.
+        catch (const std::exception& e) { // Gestion des erreurs éventuelles.
+            std::cerr << "Erreur : " << e.what() << std::endl; // Affiche l'erreur.
             return 1; // Termine le programme avec un code d'erreur.
         }
     }
 
-    return 0; // Retourne 0 pour indiquer que le programme s'est terminé avec succès.
+    return 0; // Terminaison normale du programme.
 }
