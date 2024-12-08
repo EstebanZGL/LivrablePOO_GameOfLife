@@ -13,53 +13,53 @@ class ModeConsole { // Classe représentant le jeu en mode console.
 private:
 
     grille grille; // Instance de la grille représentant l'état du jeu.
-    int iterationCount; // Compteur d'itérations.
-    int delay; // Délai entre chaque mise à jour de la grille (en millisecondes).
+    int CompteurIteration; // Compteur d'itérations.
+    int delai; // Délai entre chaque mise à jour de la grille (en millisecondes).
     std::atomic<bool> running; // Variable atomique pour contrôler l'exécution du jeu (thread-safe).
-    std::ofstream outputFile; // Flux de fichier pour sauvegarder les états du jeu.
-    bool pausing=0;
+    std::ofstream FichierSortie; // Flux de fichier pour sauvegarder les états du jeu.
+    bool pause=0;
 
 public:
     // Constructeur pour initialiser le jeu avec une grille vide.
-    ModeConsole(int ligne, int colonne, int delayms)
+    ModeConsole(int ligne, int colonne, int delaiMs)
         : grille(ligne, colonne, 1.0), 
-        iterationCount(0), delay(delayms), running(true) { 
-        outputFile.open("sauvegarde.txt"); // Ouvre un fichier pour sauvegarder les états.
-        if (!outputFile.is_open()) { // Vérifie si le fichier s'est bien ouvert.
+        CompteurIteration(0), delai(delaiMs), running(true) { 
+        FichierSortie.open("sauvegarde.txt"); // Ouvre un fichier pour sauvegarder les états.
+        if (!FichierSortie.is_open()) { // Vérifie si le fichier s'est bien ouvert.
             throw std::runtime_error("Impossible d'ouvrir le fichier de sauvegarde."); 
         }
     }
 
     // Constructeur pour initialiser le jeu à partir d'un fichier existant.
-    ModeConsole(const std::string& NomFichier, int delayms)
-        : grille(0, 0, 1.0f), iterationCount(0), delay(delayms), running(true) { 
-        grille.loadFromFile(NomFichier); 
-        outputFile.open("sauvegarde.txt"); // Ouvre un fichier pour sauvegarder les états.
-        if (!outputFile.is_open()) { // Vérifie si le fichier s'est bien ouvert.
+    ModeConsole(const std::string& NomFichier, int delaiMs)
+        : grille(0, 0, 1.0f), CompteurIteration(0), delai(delaiMs), running(true) { 
+        grille.ouvrirFichier(NomFichier); 
+        FichierSortie.open("sauvegarde.txt"); // Ouvre un fichier pour sauvegarder les états.
+        if (!FichierSortie.is_open()) { // Vérifie si le fichier s'est bien ouvert.
             throw std::runtime_error("Impossible d'ouvrir le fichier de sauvegarde.");
         }
     }
 
     // Destructeur pour fermer le fichier de sortie si nécessaire.
     ~ModeConsole() {
-        if (outputFile.is_open()) { 
-            outputFile.close(); 
+        if (FichierSortie.is_open()) { 
+            FichierSortie.close(); 
         }
     }
 
     // Méthode pour afficher la grille dans la console.
-    void displayGrid() {
-        if (!pausing) {
+    void AffichageGrille() {
+        if (!pause) {
             printf("\033c"); // Efface la console.
-            for (int x = 0; x < grille.getligne(); ++x) {
-                for (int y = 0; y < grille.getcolonne(); ++y) {
-                    if (grille.getCells()[x][y].getAlive() && !grille.getCells()[x][y].isObstacleAlive()) { // Si la cellule est vivante.
+            for (int x = 0; x < grille.avoirLigne(); ++x) {
+                for (int y = 0; y < grille.avoirColonne(); ++y) {
+                    if (grille.recupererCellule()[x][y].estVivant() && !grille.recupererCellule()[x][y].estObstacleVivant()) { // Si la cellule est vivante.
                         std::cout << "\033[33m1\033[0m "; // Affiche "1" en jaune 033=1 en ESC.
                     }
-                    else if (grille.getCells()[x][y].isObstacleAlive()) {
+                    else if (grille.recupererCellule()[x][y].estObstacleVivant()) {
                         std::cout << "\033[32mX\033[0m "; //Affiche "X" en vert pour l'obstacle vivant
                     }
-                    else if (grille.getCells()[x][y].isObstacle() && !grille.getCells()[x][y].isObstacleAlive()) {
+                    else if (grille.recupererCellule()[x][y].estObstacle() && !grille.recupererCellule()[x][y].estObstacleVivant()) {
                         std::cout << "\033[31mX\033[0m "; //Affiche "X" en rouge pour l'obstacle mort
                     }
                     else {
@@ -70,41 +70,40 @@ public:
             }
 
 
-            std::cout << "Iterations: " << iterationCount << std::endl;
+            std::cout << "Iterations: " << CompteurIteration << std::endl;
             std::cout << "Entrez sur 'q' pour quitter." << std::endl;
 
             // Sauvegarde l'état actuel de la grille dans le fichier.
-            saveCurrentState();
+            SauvegardeEtat();
         }
     }
 
     // Méthode pour sauvegarder l'état actuel de la grille dans un fichier.
-    void saveCurrentState() {
-        if (outputFile.is_open()) { 
-            outputFile << "Itération: " << iterationCount << "\n"; 
-            for (int x = 0; x < grille.getligne(); ++x) { 
-                for (int y = 0; y < grille.getcolonne(); ++y) { 
-                    outputFile << (grille.getCells()[x][y].getAlive() ? "1" : "0") << " ";
+    void SauvegardeEtat() {
+        if (FichierSortie.is_open()) { 
+            FichierSortie << "Itération: " << CompteurIteration << "\n"; 
+            for (int x = 0; x < grille.avoirLigne(); ++x) { 
+                for (int y = 0; y < grille.avoirColonne(); ++y) { 
+                    FichierSortie << (grille.recupererCellule()[x][y].estVivant() ? "1" : "0") << " ";
 
                 }
-                outputFile << "\n"; 
+                FichierSortie << "\n"; 
             }
 
-            outputFile << "\n"; 
+            FichierSortie << "\n"; 
         }
     }
 
     // Méthode exécutée dans un thread séparé pour gérer les entrées utilisateur.
-    void inputThread() {
+    void ThreadUtilisateur() {
         char input; 
         while (running) { // Boucle continue tant que le jeu est en cours.
             std::cin >> input; 
             if (input == 'q') { 
                 running = false; 
-
             }
             else if (input == 'p') {
-                pausing = !pausing;
+                pause = !pause;
             }
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');// Ignore le reste de la ligne pour éviter les problèmes d'entrée.
         }
@@ -112,18 +111,16 @@ public:
 
 
     // Méthode pour démarrer le jeu.
-    void start() {
+    void Demarrage() {
         // Lancement du thread pour gérer les entrées utilisateur.
-        std::thread inputThread(&ModeConsole::inputThread, this);
+        std::thread ThreadUtilisateur(&ModeConsole::ThreadUtilisateur, this);
         while (running) { 
-
-            displayGrid(); 
-            grille.updateGrid(); 
-            iterationCount++; 
-            std::this_thread::sleep_for(std::chrono::milliseconds(delay)); // Pause entre les mises à jour.
+            AffichageGrille(); 
+            grille.GrilleMAJ(); 
+            CompteurIteration++; 
+            std::this_thread::sleep_for(std::chrono::milliseconds(delai)); // Pause entre les mises à jour.
         }
-
-        inputThread.join(); // Attend que le thread d'entrée utilisateur se termine.
+        ThreadUtilisateur.join(); // Attend que le thread d'entrée utilisateur se termine.
     }
 };
 

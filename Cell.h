@@ -1,70 +1,70 @@
 #ifndef CELL_HPP
 #define CELL_HPP
 
-enum class CellState {
-    DEAD,
-    ALIVE,
-    OBSTACLE_ALIVE,
-    OBSTACLE_DEAD
+enum class EtatCellule {
+    MORT,
+    VIVANT,
+    OBSTACLE_VIVANT,
+    OBSTACLE_MORT
 };
 
 class Cell {
 private:
-    CellState state;
+    EtatCellule etat;
 
 public:
-    Cell() : state(CellState::DEAD) {}
+    Cell() : etat(EtatCellule::MORT) {}
 
-    void setAlive(bool alive) {
-        if (state == CellState::OBSTACLE_DEAD || state == CellState::OBSTACLE_ALIVE) {
+    void defEtatCel(bool vivant) {
+        if (etat == EtatCellule::OBSTACLE_MORT || etat == EtatCellule::OBSTACLE_VIVANT) {
             return;
         }
-        state = alive ? CellState::ALIVE : CellState::DEAD;
+        etat = vivant ? EtatCellule::VIVANT : EtatCellule::MORT;
     }
 
-    void clearCell() {
-        state = CellState::DEAD;
+    void ReinitialiserCellules() {
+        etat = EtatCellule::MORT;
     }
 
-    bool getAlive() const {
-        return state == CellState::ALIVE || state == CellState::OBSTACLE_ALIVE;
+    bool estVivant() const {
+        return etat == EtatCellule::VIVANT || etat == EtatCellule::OBSTACLE_VIVANT;
     }
 
-    bool getAliveColor() const {
-        return state == CellState::ALIVE;
+    bool estVivantCouleur() const {
+        return etat == EtatCellule::VIVANT;
     }
 
-    void toggleObstacle() {
-        if (state == CellState::OBSTACLE_ALIVE) {
-            state = CellState::DEAD; // Si c'est un obstacle vivant, on le rend mort
+    void defObstacle() {
+        if (etat == EtatCellule::OBSTACLE_VIVANT) {
+            etat = EtatCellule::MORT; // Si c'est un obstacle vivant, on le rend mort
         }
-        else if (state == CellState::OBSTACLE_DEAD) {
-            state = CellState::OBSTACLE_ALIVE; // Si c'est un obstacle mort, on le rend vivant
+        else if (etat == EtatCellule::OBSTACLE_MORT) {
+            etat = EtatCellule::OBSTACLE_VIVANT; // Si c'est un obstacle mort, on le rend vivant
         }
-        else if (state == CellState::DEAD) {
-            state = CellState::OBSTACLE_DEAD; // On marque la cellule comme obstacle mort
+        else if (etat == EtatCellule::MORT) {
+            etat = EtatCellule::OBSTACLE_MORT; // On marque la cellule comme obstacle mort
         }
     }
 
-    void toggleObstacle(int stateInput) {
-        if (stateInput == 2) {
-            state = CellState::OBSTACLE_ALIVE; // Obstacle vivant
+    void defObstacle(int appui) {
+        if (appui == 2) {
+            etat = EtatCellule::OBSTACLE_VIVANT; // Obstacle vivant
         }
         else {
-            state = CellState::OBSTACLE_DEAD; // Obstacle mort
+            etat = EtatCellule::OBSTACLE_MORT; // Obstacle mort
         }
     }
 
-    bool isObstacle() const {
-        return state == CellState::OBSTACLE_ALIVE || state == CellState::OBSTACLE_DEAD;
+    bool estObstacle() const {
+        return etat == EtatCellule::OBSTACLE_VIVANT || etat == EtatCellule::OBSTACLE_MORT;
     }
 
-    bool isObstacleAlive() const {
-        return state == CellState::OBSTACLE_ALIVE;
+    bool estObstacleVivant() const {
+        return etat == EtatCellule::OBSTACLE_VIVANT;
     }
 
-    bool canBeModified() const { // Méthode pour vérifier si la cellule peut être modifiée
-        return state == CellState::DEAD || state == CellState::ALIVE;  // Seules les cellules mortes peuvent être modifiées
+    bool estModifiable() const { // Méthode pour vérifier si la cellule peut être modifiée
+        return etat == EtatCellule::MORT || etat == EtatCellule::VIVANT;  // Seules les cellules mortes et vivantes peuvent être modifiées
     }
 };
 

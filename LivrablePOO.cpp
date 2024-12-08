@@ -60,7 +60,7 @@ void testGrille() {
 
 
 int main() { // Point d'entree principal du programme.
-    int ligne, colonne, delay; // Variables pour les dimensions de la grille et le délai entre les itérations.
+    int ligne, colonne, delai; // Variables pour les dimensions de la grille et le délai entre les itérations.
     float TailleCellule = 20.0; // Taille des cellules pour le mode graphique.
     char choix; // Variable pour stocker le choix de l'utilisateur.
 
@@ -84,13 +84,13 @@ int main() { // Point d'entree principal du programme.
 
         if (choix == 'G' || choix == 'g') { // Si l'utilisateur choisit le mode graphique.
             std::cout << "Entrez le temps entre chaque iteration (en millisecondes) : ";
-            std::cin >> delay; // Lecture du délai entre les itérations.
+            std::cin >> delai; // Lecture du délai entre les itérations.
 
             try {
                 // Création et démarrage du jeu en mode graphique.
                 testGrille(); // Ajoutez cette ligne pour exécuter les tests
-                ModeGraphique Graphique(NomFichier, TailleCellule, delay);
-                Graphique.start(); // Lancement du jeu.
+                ModeGraphique Graphique(NomFichier, TailleCellule, delai);
+                Graphique.Demarrage(); // Lancement du jeu.
             }
             catch (const char* e) { // Gestion des erreurs éventuelles.
                 std::cerr << "Erreur : " << e << std::endl; // Affiche l'erreur.
@@ -101,12 +101,12 @@ int main() { // Point d'entree principal du programme.
         else { // Si l'utilisateur choisit le mode console.
             testGrille(); // Ajoutez cette ligne pour exécuter les tests
             std::cout << "Entrez le temps entre chaque iteration (en millisecondes) : ";
-            std::cin >> delay; // Lecture du délai entre les itérations.
+            std::cin >> delai; // Lecture du délai entre les itérations.
 
             try {
                 // Création et démarrage du jeu en mode console.
-                ModeConsole Console(NomFichier, delay);
-                Console.start(); // Lancement du jeu.
+                ModeConsole Console(NomFichier, delai);
+                Console.Demarrage(); // Lancement du jeu.
             }
             catch (const char* e) { // Gestion des erreurs éventuelles.
                 std::cerr << "Erreur : " << e << std::endl; // Affiche l'erreur.
@@ -122,13 +122,13 @@ int main() { // Point d'entree principal du programme.
         std::cout << "Entrez le nombre de colonnes : ";
         std::cin >> colonne; // Lecture du nombre de colonnes.
         std::cout << "Entrez le temps entre chaque iteration (en millisecondes) : ";
-        std::cin >> delay; // Lecture du délai entre les itérations.
+        std::cin >> delai; // Lecture du délai entre les itérations.
 
         try {
             // Création et démarrage du jeu en mode graphique avec une grille vide.
             testGrille(); // Ajoutez cette ligne pour exécuter les tests
-            ModeGraphique Graphique(ligne, colonne, TailleCellule, delay);
-            Graphique.start(); // Lancement du jeu.
+            ModeGraphique Graphique(ligne, colonne, TailleCellule, delai);
+            Graphique.Demarrage(); // Lancement du jeu.
         }
         catch (const char* e) { // Gestion des erreurs éventuelles.
             std::cerr << "Erreur : " << e << std::endl; // Affiche l'erreur.
