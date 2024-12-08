@@ -1,7 +1,63 @@
 #include <iostream> // Inclusion de la biblioth�que standard pour les entr�es/sorties.
+#include <vector>
+#include <stdexcept>
 #include "GraphicGame.h" // Inclusion de la classe pour le mode graphique.
 #include "ConsoleGame.h" // Inclusion de la classe pour le mode console.
 #include <fstream>
+
+
+// Fonction pour vérifier la validité de la grille
+bool isValidGrid(const std::vector<std::vector<int>>& grid) {
+    // Exemple de vérification : la grille ne doit pas être vide
+    if (grid.empty() || grid[0].empty()) {
+        return false; // Grille invalide
+    }
+
+    // Vérifier que toutes les lignes ont la même longueur
+    size_t rowSize = grid[0].size();
+    for (const auto& row : grid) {
+        if (row.size() != rowSize) {
+            return false; // Grille invalide
+        }
+    }
+
+    // Ajouter d'autres vérifications selon les règles de votre jeu
+
+    return true; // Grille valide
+}
+
+// Fonction de test unitaire
+void testGridValidation() {
+    std::vector<std::vector<int>> validGrid = { {0, 1, 0}, {1, 0, 1}, {0, 0, 0} };
+    std::vector<std::vector<int>> emptyGrid = {};
+    std::vector<std::vector<int>> invalidGrid = { {0, 1}, {1, 0, 1} };
+
+    // Test de la grille valide
+    if (!isValidGrid(validGrid)) {
+        std::cerr << "Échec du test : la grille valide a été jugée invalide." << std::endl;
+    }
+    else {
+        std::cout << "Test réussi : la grille valide est correcte." << std::endl;
+    }
+
+    // Test de la grille vide
+    if (isValidGrid(emptyGrid)) {
+        std::cerr << "Échec du test : la grille vide a été jugée valide." << std::endl;
+    }
+    else {
+        std::cout << "Test réussi : la grille vide est correcte." << std::endl;
+    }
+
+    // Test de la grille invalide
+    if (isValidGrid(invalidGrid)) {
+        std::cerr << "Échec du test : la grille invalide a été jugée valide." << std::endl;
+    }
+    else {
+        std::cout << "Test réussi : la grille invalide est correcte." << std::endl;
+    }
+}
+
+
 
 int main() { // Point d'entr�e principal du programme.
     int ligne, colonne, delay; // Variables pour les dimensions de la grille et le d�lai entre les it�rations.
@@ -14,6 +70,8 @@ int main() { // Point d'entr�e principal du programme.
     // Demande � l'utilisateur s'il veut charger un fichier ou �diter manuellement.
     std::cout << "Voulez-vous Lire(L) un fichier ou Editer(E) manuellement ? (L/E) : ";
     std::cin >> choix; // Lecture du choix de l'utilisateur.
+
+    testGridValidation(); // Ajoutez cette ligne pour exécuter les tests
 
     if (choix == 'L' || choix == 'l') { // Si l'utilisateur choisit de lire un fichier.
         std::cout << "Entrez le nom du fichier : ";
