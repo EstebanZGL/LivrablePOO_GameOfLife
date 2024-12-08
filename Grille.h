@@ -6,10 +6,10 @@
 #include <fstream>
 #include "Cell.h" 
 
-class Grid {
+class grille {
 private:
     int ligne, colonne; // Nombre de lignes et de colonnes de la grille.
-    float cellSize; // Taille d'une cellule en pixels.
+    float TailleCellule; // Taille d'une cellule en pixels.
     std::vector<std::vector<Cell>> cells; // Grille de cellules.
 
     int countNeighbors(int x, int y) const { // compter les voisins vivants d'une cellule.
@@ -32,17 +32,17 @@ private:
 public:
 
     float getCellSize() const { // M�thode pour obtenir la taille de la cellule
-        return cellSize;
+        return TailleCellule;
     }
 
-    Grid(int lig, int col, float size) // Constructeur de la grille.
-        : ligne(lig), colonne(col), cellSize(size), cells(lig, std::vector<Cell>(col)) {} // Initialise les dimensions et les cellules.
+    grille(int lig, int col, float size) // Constructeur de la grille.
+        : ligne(lig), colonne(col), TailleCellule(size), cells(lig, std::vector<Cell>(col)) {} // Initialise les dimensions et les cellules.
 
     const std::vector<std::vector<Cell>>& getCells() const { return cells; } // Retourne la grille des cellules.
 
 
-    void loadFromFile(const std::string& filename) {
-        std::ifstream file(filename);
+    void loadFromFile(const std::string& NomFichier) {
+        std::ifstream file(NomFichier);
         if (file.is_open()) {
             // Lire le nombre de lignes et de colonnes
             file >> ligne >> colonne;
@@ -91,8 +91,8 @@ public:
 
 
     void toggleCell(int sourisX, int sourisY) { // Change l'état d'une cellule en fonction des coordonnées de la souris.
-        int x = sourisY / cellSize;
-        int y = sourisX / cellSize;
+        int x = sourisY / TailleCellule;
+        int y = sourisX / TailleCellule;
         if (x >= 0 && x < ligne && y >= 0 && y < colonne) {
             if (cells[x][y].canBeModified()) { // Vérifie si la cellule peut être modifiée
                 bool currentState = cells[x][y].getAlive(); // Récupère l'état actuel de la cellule.
@@ -133,10 +133,10 @@ public:
     
 
     void draw(sf::RenderWindow& window) const { // Dessine la grille dans une fenêtre SFML.
-        sf::RectangleShape cellShape(sf::Vector2f(cellSize, cellSize)); // Crée une forme rectangulaire pour une cellule.
+        sf::RectangleShape cellShape(sf::Vector2f(TailleCellule, TailleCellule)); // Crée une forme rectangulaire pour une cellule.
         for (int x = 0; x < ligne; ++x) { // Parcours des lignes.
             for (int y = 0; y < colonne; ++y) { // Parcours des colonnes.
-                cellShape.setPosition(static_cast<float>(y) * cellSize, static_cast<float>(x) * cellSize); // Positionne la cellule.
+                cellShape.setPosition(static_cast<float>(y) * TailleCellule, static_cast<float>(x) * TailleCellule); // Positionne la cellule.
 
                 // Choisit la couleur en fonction de l'état.
                 if (cells[x][y].getAliveColor()) {
@@ -157,18 +157,18 @@ public:
         }
 
         // Lignes pour la grille.
-        sf::RectangleShape line(sf::Vector2f(colonne * cellSize, 1)); // Ligne.
+        sf::RectangleShape line(sf::Vector2f(colonne * TailleCellule, 1)); // Ligne.
         line.setFillColor(sf::Color::Black); // Couleur noire pour les lignes.
 
         for (int i = 1; i < ligne; ++i) { // Dessine les lignes.
-            line.setPosition(0, static_cast<float>(i) * cellSize); // Positionne la ligne.
+            line.setPosition(0, static_cast<float>(i) * TailleCellule); // Positionne la ligne.
             window.draw(line); // Dessine la ligne.
         }
 
-        line.setSize(sf::Vector2f(1, ligne * cellSize)); // Colonne.
+        line.setSize(sf::Vector2f(1, ligne * TailleCellule)); // Colonne.
 
         for (int i = 1; i < colonne; ++i) { // Dessine les colonnes.
-            line.setPosition(static_cast<float>(i) * cellSize, 0); // Positionne la colonne.
+            line.setPosition(static_cast<float>(i) * TailleCellule, 0); // Positionne la colonne.
             window.draw(line); // Dessine la colonne.
         }
     }

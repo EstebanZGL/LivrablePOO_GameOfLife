@@ -152,13 +152,12 @@
     <None Include="..\..\..\..\..\..\..\..\..\..\SFML\bin\sfml-system-d-2.dll" />
     <None Include="..\..\..\..\..\..\..\..\..\..\SFML\bin\sfml-window-2.dll" />
     <None Include="..\..\..\..\..\..\..\..\..\..\SFML\bin\sfml-window-d-2.dll" />
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cell.h" />
-    <ClInclude Include="ConsoleGame.h" />
-    <ClInclude Include="GraphicGame.h" />
-    <ClInclude Include="Grid.h" />
+    <ClInclude Include="ModeConsole.h" />
+    <ClInclude Include="ModeGraphique.h" />
+    <ClInclude Include="Grille.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
