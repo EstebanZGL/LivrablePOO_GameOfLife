@@ -4,7 +4,7 @@ Voici les différentes fonctionnalités :
 
 -Mode graphique ou console
 
--Possibilité d'un fichier d'entrée ou d'un choix manuel des celllules
+-Possibilité d'un fichier d'entrée ou d'un choix manuel des celllules (uniquement graphique)
 
 -Choix du temps entre les itérations	
 
