@@ -54,7 +54,7 @@ void grille::ouvrirFichier(const std::string& NomFichier) {
                         cellules[x][y].defEtatCel(false); // Cellule morte
                     }
                     else if (etat == 2 || etat == 3) {
-                        cellules[x][y].defObstacle(); // Définir comme obstacle
+                        cellules[x][y].defObstacle(etat); // Définir comme obstacle
                     }
                     else {
                         cellules[x][y].defEtatCel(false); // Par défaut, cellule morte

@@ -58,10 +58,10 @@ void testGrille() {
 
     // Test de la grille invalide (lignes de longueur incorrecte)
     if (ValidationGrille(GrilleInvalideLongueur)) {
-        std::cerr << "Echec du test : la grille avec lignes de longueurs différentes est jugee valide." << std::endl;
+        std::cerr << "Echec du test : la grille avec lignes de longueurs differentes est jugee valide." << std::endl;
     }
     else {
-        std::cout << "Test reussi : la grille avec lignes de longueurs différentes est correcte." << std::endl;
+        std::cout << "Test reussi : la grille avec lignes de longueurs differentes est correcte." << std::endl;
     }
 }
 
