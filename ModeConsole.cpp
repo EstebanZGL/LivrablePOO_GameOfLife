@@ -112,3 +112,4 @@ void ModeConsole::Demarrage() {
     }
     ThreadUtilisateur.join(); // Attendre la fin du thread utilisateur
 }
+
