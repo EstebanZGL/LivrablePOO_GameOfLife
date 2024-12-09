@@ -46,13 +46,13 @@ void ModeConsole::AffichageGrille() {
             for (int y = 0; y < grille.avoirColonne(); ++y) {
                 // Conditions pour afficher les cellules
                 if (grille.recupererCellule()[x][y].estVivant() && !grille.recupererCellule()[x][y].estObstacleVivant()) {
-                    std::cout << "\033[33m1\033[0m "; // Cellule vivante
+                    std::cout << "\033[33m1\033[0m "; // Cellule vivante orange
                 }
                 else if (grille.recupererCellule()[x][y].estObstacleVivant()) {
-                    std::cout << "\033[32mX\033[0m "; // Obstacle vivant
+                    std::cout << "\033[32mX\033[0m "; // Obstacle vivant vert
                 }
                 else if (grille.recupererCellule()[x][y].estObstacle() && !grille.recupererCellule()[x][y].estObstacleVivant()) {
-                    std::cout << "\033[31mX\033[0m "; // Obstacle non vivant
+                    std::cout << "\033[31mX\033[0m "; // Obstacle non vivant rouge
                 }
                 else {
                     std::cout << "0 "; // Cellule morte
@@ -103,10 +103,12 @@ void ModeConsole::ThreadUtilisateur() {
 void ModeConsole::Demarrage() {
     std::thread ThreadUtilisateur(&ModeConsole::ThreadUtilisateur, this); // Lancer le thread pour les entrées utilisateur
     while (running) { // Tant que le jeu est en cours
-        AffichageGrille(); // Afficher la grille
-        grille.GrilleMAJ(); // Mettre à jour la grille
-        CompteurIteration++; // Incrémenter le compteur d'itérations
-        std::this_thread::sleep_for(std::chrono::milliseconds(delai)); // Attendre le délai spécifié
+        while (!pause && running) {
+            AffichageGrille(); // Afficher la grille
+            grille.GrilleMAJ(); // Mettre à jour la grille
+            CompteurIteration++; // Incrémenter le compteur d'itérations
+            std::this_thread::sleep_for(std::chrono::milliseconds(delai)); // Attendre le délai spécifié
+        }
     }
     ThreadUtilisateur.join(); // Attendre la fin du thread utilisateur
 }
