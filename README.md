@@ -30,6 +30,8 @@ Voici les différentes fonctionnalités :
         -"g" pour glider
         -"h" pour canon à glider
 
+-Appuyer sur "t" pour afficher le menu
+
 
 
 ## Mode console :
