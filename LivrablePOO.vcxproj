@@ -132,7 +132,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Cellule.cpp" />
+    <ClCompile Include="Grille.cpp" />
     <ClCompile Include="LivrablePOO.cpp" />
+    <ClCompile Include="ModeConsole.cpp" />
+    <ClCompile Include="ModeGraphique.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\..\..\Downloads\glider.txt" />
@@ -155,7 +159,7 @@
     <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Cell.h" />
+    <ClInclude Include="Cellule.h" />
     <ClInclude Include="ModeConsole.h" />
     <ClInclude Include="ModeGraphique.h" />
     <ClInclude Include="Grille.h" />

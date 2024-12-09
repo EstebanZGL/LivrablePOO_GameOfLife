@@ -18,16 +18,16 @@
     <ClCompile Include="LivrablePOO.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="GraphicGame.cpp">
+    <ClCompile Include="Cellule.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Cell.cpp">
+    <ClCompile Include="Grille.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Grid.cpp">
+    <ClCompile Include="ModeConsole.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="ConsoleGame.cpp">
+    <ClCompile Include="ModeGraphique.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -65,18 +65,19 @@
     <None Include="..\..\..\..\..\..\..\..\..\..\SFML\bin\sfml-audio-2.dll">
       <Filter>Fichiers de ressources</Filter>
     </None>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Cell.h">
+    <ClInclude Include="Cellule.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="Grid.h">
+    <ClInclude Include="ModeConsole.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="ConsoleGame.h">
+    <ClInclude Include="ModeGraphique.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="GraphicGame.h">
+    <ClInclude Include="Grille.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
