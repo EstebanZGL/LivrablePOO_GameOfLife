@@ -1,5 +1,7 @@
 # Jeu de la Vie de Conway. 
 
+Lien du GITHUB : https://github.com/EstebanZGL/LivrablePOO_GameOfLife/
+
 Voici les différentes fonctionnalités :
 
 -Mode graphique ou console
