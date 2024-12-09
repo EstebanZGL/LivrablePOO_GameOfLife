@@ -17,7 +17,6 @@ public:
 
     void defEtatCel(bool vivant) {
         if (etat == EtatCellule::OBSTACLE_MORT || etat == EtatCellule::OBSTACLE_VIVANT) {
-            return;
         }
         etat = vivant ? EtatCellule::VIVANT : EtatCellule::MORT;
     }
